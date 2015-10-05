@@ -17,10 +17,21 @@ const regexFind = function(str, regex) {
     }
 };
 
-const parseShow = function(date, numberOfShows, venue, time, soldOut, ages, price, band) {
+const parseShow = function(date, numberOfShows, venue, time, soldOut, pit, multiDay, ages, price, band) {
+    // date: "Tue 9 Feb 2016"
+    // numberOfShows: "2 shows"
+    // venue: "Great American Music Hall"
+    // time: "6:30pm/7:30pm" or "7:00am"...
+    // soldOut: "sold out" or "fri sold out"
+    // pit: "Pit!"
+    // multiDay: "Multi-day event"
+    // ages: "a/a" or "21+" ...
+    // price: "$45"
+    // band: "Wu-tang Clan"
+    //
     //eventually this function could be used to write to disk
     log(" ")
-    log(band, date, venue, time, soldOut, ages, price);
+    log(band, date, numberOfShows, venue, time, soldOut, pit, multiDay, ages, price);
 }
 
 request(theListURL, (error, response, html) => {
@@ -42,7 +53,7 @@ request(theListURL, (error, response, html) => {
             // at this level we can grab venue and attributes for a show
             // here I also parse the attributes for time of show, whether
             // it's sold out, which ages are permitted, and the price.
-            // it's possible time, soldOut and price could be null.
+            // it's possible time, soldOut, pit, multiDay, and price could be null.
 
             let $where = $(text).find('.where')
             let venue = $where.find('a:first-child').text()
@@ -54,6 +65,12 @@ request(theListURL, (error, response, html) => {
 
             let soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
             let soldOut = regexFind(attributes, soldOutRegEx);
+
+            let pitRegEx = /^.*?\s([pP]it!).*$/;
+            let pit = regexFind(attributes, pitRegEx);
+
+            let multiDayRegEx = /^.*?\s(Multi-day event).*$/;
+            let multiDay = regexFind(attributes, multiDayRegEx);
 
             let agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
             let ages = regexFind(attributes, agesRegEx);
@@ -69,10 +86,10 @@ request(theListURL, (error, response, html) => {
                 // info, i.e. Band Name (sat) or Band Name (Portland)
 
                 // all germane variables we should have access to here:
-                // date, numberOfShows, venue, time, soldOut, ages, price,
-                // band
+                // date, numberOfShows, venue, time, soldOut, pit, multiDay,
+                // ages, price, band
                 let band = $(text).text()
-                parseShow(date, numberOfShows, venue, time, soldOut, ages, price, band);
+                parseShow(date, numberOfShows, venue, time, soldOut, pit, multiDay, ages, price, band);
             });
         });
 
