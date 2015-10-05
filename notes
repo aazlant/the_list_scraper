@@ -1,0 +1,32 @@
+https://www.uncorp.net/list/index.html
+
+
+
+http://jon.luini.com/thelist/date.html
+
+month and year
+table > tbody > tr > th > font
+
+day and date
+table:nth-child(7) > tbody:nth-child(1) > tr > td:nth-child(1) > font:nth-child(1) > b:nth-child(1)
+
+bands
+table:nth-child(7) > tbody:nth-child(1) > tr > td:nth-child(2) > font:nth-child(1)
+
+venue
+table:nth-child(7) > tbody:nth-child(1) > tr > td:nth-child(3) > font:nth-child(1) > a:nth-child(1)
+
+all attributes
+table:nth-child(7) > tbody:nth-child(1) > tr > td:nth-child(4) > font:nth-child(1)
+
+time
+/^(.*\s)([\d\:\/pm]+pm)(.*)$/
+
+sold out
+/^()(sold out)()$/
+
+ages
+/^(.*)(21\s*\+|6\s*\+|18\s*\+|a\/a)(.*)$/
+
+price
+/^(.*)(\$[^\s\)]+|free)(.*)$/
