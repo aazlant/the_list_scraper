@@ -17,10 +17,29 @@ const regexFind = function(str, regex) {
     }
 };
 
-const parseShow = function(date, numberOfShows, venue, time, soldOut, pit, multiDay, ages, price, band) {
+const parseShow = function(date, numberOfShows, venue, attributes, band) {
     // date: "Tue 9 Feb 2016"
     // numberOfShows: "2 shows"
     // venue: "Great American Music Hall"
+
+    let timeRegEx = /^.*\s([\d\:\/pm]+pm).*$/;
+    let time = regexFind(attributes, timeRegEx);
+
+    let soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
+    let soldOut = regexFind(attributes, soldOutRegEx);
+
+    let pitRegEx = /^.*?\s([pP]it!).*$/;
+    let pit = regexFind(attributes, pitRegEx);
+
+    let multiDayRegEx = /^.*?\s(Multi-day event).*$/;
+    let multiDay = regexFind(attributes, multiDayRegEx);
+
+    let agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
+    let ages = regexFind(attributes, agesRegEx);
+
+    let priceRegEx = /^.*(\$[^\s\)]+|free).*$/;
+    let price = regexFind(attributes, priceRegEx);
+
     // time: "6:30pm/7:30pm" or "7:00am"...
     // soldOut: "sold out" or "fri sold out"
     // pit: "Pit!"
@@ -60,24 +79,6 @@ request(theListURL, (error, response, html) => {
 
             let attributes = $where.clone().find('a').remove().end().text();
 
-            let timeRegEx = /^.*\s([\d\:\/pm]+pm).*$/;
-            let time = regexFind(attributes, timeRegEx);
-
-            let soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
-            let soldOut = regexFind(attributes, soldOutRegEx);
-
-            let pitRegEx = /^.*?\s([pP]it!).*$/;
-            let pit = regexFind(attributes, pitRegEx);
-
-            let multiDayRegEx = /^.*?\s(Multi-day event).*$/;
-            let multiDay = regexFind(attributes, multiDayRegEx);
-
-            let agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
-            let ages = regexFind(attributes, agesRegEx);
-
-            let priceRegEx = /^.*(\$[^\s\)]+|free).*$/;
-            let price = regexFind(attributes, priceRegEx);
-
             let $allBands = $(text).find('.band');
 
             $allBands.each((number, text)=> {
@@ -89,7 +90,7 @@ request(theListURL, (error, response, html) => {
                 // date, numberOfShows, venue, time, soldOut, pit, multiDay,
                 // ages, price, band
                 let band = $(text).text()
-                parseShow(date, numberOfShows, venue, time, soldOut, pit, multiDay, ages, price, band);
+                parseShow(date, numberOfShows, venue, attributes, band);
             });
         });
 
