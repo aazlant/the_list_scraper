@@ -1,2 +1,20 @@
 require('babel/register');
-require('./index.js');
+var scraper = require('./index.js');
+var parseArgs = require('minimist');
+
+if (require.main == module){
+
+    opts = {
+        alias: {
+            "r": "root"
+        }
+    }
+
+    argv = parseArgs(process.argv.slice(2), opts)
+
+    config = {
+        rootPath: argv.root,
+    }
+
+    scraper(null, config)
+}
