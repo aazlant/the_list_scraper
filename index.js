@@ -7,6 +7,157 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 import winston from 'winston';
 
+class Logger {
+
+    error(msg) {
+        this.log(msg, 'error');
+    }
+    warn(msg) {
+        this.log(msg, 'warn');
+    }
+    info(msg) {
+        this.log(msg, 'info');
+    }
+
+    log(msg, type) {
+        throw new Error('Not implemented');
+    }
+}
+
+class WinstonLogger extends Logger {
+
+    // options : {
+    //     type: console/file,
+    //     label: 'label-name',
+    //     level: 'info',
+    //     json: true/false,
+    //     // console
+    //     colorize: true/false,
+    //     prettyPrint: true/false,
+    //     // file
+    //     filename: 'pathName'
+    // }
+
+    constructor(options){
+
+        super();
+        let transports = [];
+        const {type, ...rest} = options;
+
+        const defaults = {
+            level: "info",
+            json: false,
+            colorize: false,
+            prettyPrint: false
+        };
+
+        const optionsWithDefaults = {...defaults, ...rest};
+
+        const {label, level, json, colorize, prettyPrint, filename} = optionsWithDefaults;
+
+        if (type.includes("console")) {
+            transports.push( new (winston.transports.Console)({
+                label,
+                level,
+                json,
+                colorize,
+                prettyPrint
+            }));
+        };
+
+        if (type.includes("file")) {
+            transports.push( new (winston.transports.File)({
+                label,
+                level,
+                json,
+                filename
+            }));
+        };
+
+        this.logger = new (winston.Logger)({
+            transports
+        })
+
+    };
+
+    addTransport(options){
+
+        const {type, ...rest} = options;
+
+        const defaults = {
+            level: "info",
+            json: false,
+            colorize: false,
+            prettyPrint: false
+        };
+
+        const optionsWithDefaults = {...defaults, ...rest};
+
+        const {label, level, json, colorize, prettyPrint, filename} = optionsWithDefaults;
+
+        if (type.includes("console")) {
+            this.logger.add(winston.transports.Console, {
+                level,
+                json,
+                colorize,
+                prettyPrint
+            });
+        };
+
+        if (type.includes("file")) {
+            this.logger.add(winston.transports.File, {
+                level,
+                json,
+                filename
+            });
+        };
+
+    };
+
+    removeTransport(type){
+
+        if (type == "console") {
+            self.logger.remove(winston.transports.Console);
+        };
+
+        if (type == "file") {
+            self.logger.remove(winston.transports.File);
+        };
+
+    };
+
+    log(message, type){
+
+        const date = new Date();
+        const messageWithMetadata = `${date.toString()}_PROCESS_${process.pid}_winston_import_the_list ${message}`;
+
+        switch(type){
+            case "error":
+                this.logger.error(messageWithMetadata);
+                break;
+            case "warn":
+                this.logger.warn(messageWithMetadata);
+                break;
+            case "info":
+                this.logger.info(messageWithMetadata);
+                break;
+            default:
+                this.logger.info(messageWithMetadata);
+        }
+
+    };
+
+};
+
+class Downloader {
+
+}
+
+class Parser {
+
+
+}
+
 class Executor {
 
     regexFind(str, regex) {
@@ -20,96 +171,47 @@ class Executor {
         }
     };
 
-    log(string, type){
-        var date = new Date()
-        var logString = `${date.toString()}_PROCESS_${process.pid}_winston_import_the_list ${string}`
-        if (type == "error") {
-            this.logger.error(logString)
-        } else if (type == "warn") {
-            this.logger.warn(logString)
-        } else {
-            this.logger.info(logString)
-        }
-    }
-
     createClaimName(){
         var startTime = new Date().toString().replace(/[ :]/g,"-").replace(/[()]/g,"")
         var claimString = "the-list-claim_" + os.hostname() + "_" + startTime + "_" + "PROCESS_" + process.pid
         return claimString
     }
 
-    createClaim(rootPath){
+    initClaim(rootPath){
 
-        var self = this;
-
-        return new Promise(
-            function (resolve, reject){
-                try {
-
-                    let constructPaths = function(rootPath){
-                        var directories = ["logs", "metadata", "tmp", "shows", "parsedShows"]
-                        for (var i = 0; i < directories.length; i++){
-                            mkdirp.sync(path.resolve(rootPath, directories[i]))
-                        }
-                    }
-
-                    self.name = self.createClaimName()
-                    self.claimRootPath = path.resolve(rootPath, self.name)
-                    const {name, claimRootPath} = self
-
-                    constructPaths(claimRootPath)
-
-                    // logging setup
-
-                    var logFile = path.resolve(claimRootPath, "logs/import.log");
-
-                    const logger = self.logger;
-                    logger.add(winston.transports.File, { filename: logFile, level: 'info', json: false });
-                    var log = (string, type) => self.log(string, type);
-
-                    // first logging: we are running the import
-
-                    log("claimString generated: " + name)
-                    // save the claim string to metadata
-                    fs.appendFileSync(path.resolve(claimRootPath, "metadata/claimName.txt"), name)
-                    log(`Claim saved to ${path.resolve(claimRootPath, "metadata/claim.txt")}`)
-                    resolve()
-                } catch (e) {
-                    reject(e)
-                }
-
+        let constructPaths = function(rootPath){
+            var directories = ["logs", "metadata", "tmp", "shows", "parsedShows"]
+            for (var i = 0; i < directories.length; i++){
+                mkdirp.sync(path.resolve(rootPath, directories[i]))
             }
-        )
-    }
+        }
 
-    setupLogging(){
+        this.name = this.createClaimName();
+        this.claimRootPath = path.resolve(rootPath, this.name);
 
-        var self = this;
+        let {name, claimRootPath, logger} = this;
+        let log = (message, type)=> logger.log(message, type);
 
-        return new Promise(
-            function(resolve, reject){
-                try{
-                    self.logger = new (winston.Logger)({
-                        transports: [
-                            new (winston.transports.Console)({
-                                prettyPrint: true,
-                                colorize: true,
-                                label: 'the-list-import'
-                            })
-                        ]
-                     });
+        constructPaths(claimRootPath);
 
-                    resolve()
-                } catch (e) {
-                    reject(e)
-                }
+        // logFile setup
+        let logFile = path.resolve(claimRootPath, "logs/import.log");
+
+        logger.addTransport({
+            type: "file",
+            filename: logFile
         })
-    };
+
+        log("claimString generated: " + name);
+        fs.appendFileSync(path.resolve(claimRootPath, "metadata/claimName.txt"), name);
+        log(`Claim saved to ${path.resolve(claimRootPath, "metadata/claim.txt")}`);
+
+    }
 
     getShows(){
 
         var self = this;
-        var log = (string, type) => self.log(string, type);
+        var log = (string, type) => self.logger.log(string, type);
         var theListURL = "https://www.uncorp.net/list/index.html";
 
         return new Promise(
@@ -180,7 +282,7 @@ class Executor {
 
     logBatchTime(){
         var self = this;
-        var log = (string, type) => self.log(string, type);
+        var log = (string, type) => self.logger.log(string, type);
 
         return new Promise(
             function (resolve, reject){
@@ -204,7 +306,7 @@ class Executor {
 
     saveToFile(json, directory, filename){
         var self = this;
-        var log = (string, type) => self.log(string, type);
+        var log = (string, type) => self.logger.log(string, type);
 
         return new Promise(
             function (resolve, reject){
@@ -226,7 +328,7 @@ class Executor {
 
     readFromFile(directory, filename){
         var self = this;
-        var log = (string, type) => self.log(string, type);
+        var log = (string, type) => self.logger.log(string, type);
 
         return new Promise(
             function (resolve, reject){
@@ -294,7 +396,7 @@ class Executor {
 
     parseShows(shows){
         var self = this;
-        var log = (string, type) => self.log(string, type);
+        var log = (string, type) => self.logger.log(string, type);
 
         return new Promise(
             function (resolve, reject){
@@ -325,14 +427,21 @@ class Executor {
     }
 
 
-    execute(stageNames){
+    execute(){
         var executionStack = ()=> {
+
+            this.logger = new WinstonLogger({
+                type: "console",
+                label: "the-list-logger",
+                colorize: true,
+                prettyPrint: true
+            });
 
             this.batchStartTime = new Date();
 
-            this.setupLogging()
-                .then(() => this.createClaim(this.config.rootPath))
-                .then(() => this.getShows())
+            this.initClaim(this.config.rootPath);
+
+            this.getShows()
 
                 .then((shows) => this.saveToFile(shows, "shows"))
                 .then(() => this.readFromFile("shows"))
@@ -342,7 +451,7 @@ class Executor {
 
                 .then(()=> this.logBatchTime())
                 .catch((error)=>{
-                    this.log(error, "error");
+                    this.logger.error(error);
                 })
 
         }
@@ -358,7 +467,7 @@ var mainExport = function(rootPath, options){
         }
     }
 
-    var executor = new Executor()
+    var executor = new Executor();
     executor.config = {
         rootPath: rootPath,
     }
