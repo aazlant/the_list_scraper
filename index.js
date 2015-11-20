@@ -151,25 +151,180 @@ class WinstonLogger extends Logger {
 
 class Downloader {
 
+    downloadHTML(url, logger){
+
+        const log = (string, type)=> logger.log(string, type);
+
+        return new Promise(
+
+            function (resolve, reject){
+
+                log(`START : Downloading ${url}`);
+                request(url, (error, response, html) => {
+                  if (!error && response.statusCode == 200) {
+                        log(`FINISH: Downloading ${url}`);
+                        resolve(html);
+                  } else {
+                    reject(error || response.statusCode);
+                  }
+
+            });
+        });
+    };
+
+}
+
+class Scraper {
+
+    scrapeShowsFromTheList(html){
+
+        const log = (string, type) => this.logger.log(string, type);
+        const shows = []
+
+        log(`START : Scraping HTML for upcoming concerts`);
+
+        const $ = cheerio.load(html);
+
+        // grab all of the dates
+        const $allDays = $('.day');
+
+        $allDays.each((number, text)=> {
+            // at this level, we can grab the date and number of shows on that date
+
+            const date = $(text).find('.date').clone().find('span').remove().end().text();
+            const numberOfShows = $(text).find('span').text()
+            const $allShows = $(text).find('.show');
+
+
+            $allShows.each((number, text)=> {
+                // at this level we can grab venue and attributes for a show
+
+                const $where = $(text).find('.where')
+                const venue = $where.find('a:first-child').text()
+
+                const attributes = $where.clone().find('a').remove().end().text();
+
+                const $allBands = $(text).find('.band');
+
+                $allBands.each((number, text)=> {
+                    // at this level I get the text for individual bands
+                    // appearing at a show. Sometimes this will have postfix
+                    // info, i.e. Band Name (sat) or Band Name (Portland)
+
+                    let band = $(text).text()
+                    shows.push({
+                        date: date,
+                        numberOfShows: numberOfShows,
+                        venue: venue,
+                        attributes: attributes,
+                        band: band
+                    });
+                });
+            });
+        });
+
+        if (shows.length > 0) {
+            log(`INFO: Found ${shows.length} shows`);
+            log(`FINISH: Scraping HTML for upcoming concerts`);
+            return shows;
+        } else {
+            throw new Error("No shows to scrape.")
+        }
+    };
+
+    scrape(html, logger){
+        this.logger = logger;
+        return this.scrapeShowsFromTheList(html);
+    }
+
 }
 
 class Parser {
 
-
-}
-
-class Executor {
-
     regexFind(str, regex) {
         // takes a string and a regex, returns the substring if
         // it exists, otherwise null
-        let result = str.match(regex);
+        const result = str.match(regex);
         if (result) {
             return result[1]
         } else {
             return null;
         }
     };
+
+    parseShowFromTheList(show){
+
+        const {date, numberOfShows, venue, attributes, band} = show;
+        // date: "Tue 9 Feb 2016"
+        // numberOfShows: "2 shows"
+        // venue: "Great American Music Hall"
+
+        const { regexFind } = this;
+
+        const timeRegEx = /^.*\s([\d\:\/pm]+pm).*$/;
+        const time = regexFind(attributes, timeRegEx);
+
+        const soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
+        const soldOut = regexFind(attributes, soldOutRegEx);
+
+        const pitRegEx = /^.*?\s([pP]it!).*$/;
+        const pit = regexFind(attributes, pitRegEx);
+
+        const multiDayRegEx = /^.*?\s(Multi-day event).*$/;
+        const multiDay = regexFind(attributes, multiDayRegEx);
+
+        const agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
+        const ages = regexFind(attributes, agesRegEx);
+
+        const priceRegEx = /^.*(\$[^\s\)]+|free).*$/;
+        const price = regexFind(attributes, priceRegEx);
+
+        // time: "6:30pm/7:30pm" or "7:00am"...
+        // soldOut: "sold out" or "fri sold out"
+        // pit: "Pit!"
+        // multiDay: "Multi-day event"
+        // ages: "a/a" or "21+" ...
+        // price: "$45"
+        // band: "Wu-tang Clan"
+        //
+        return({
+            band,
+            date,
+            numberOfShows,
+            venue,
+            time,
+            soldOut,
+            pit,
+            multiDay,
+            ages,
+            price
+        });
+    };
+
+    parseShowsFromTheList(shows){
+        const log = (string, type) => this.logger.log(string, type);
+        log(`BEGIN : parsing ${shows.length} shows`);
+        const parsedShows = []
+        for (var i = shows.length - 1; i >= 0; i--) {
+            const parsedShow = this.parseShowFromTheList(shows[i])
+            parsedShows.push(parsedShow)
+        };
+        if (parsedShows.length != shows.length) {
+            reject("Show length mismatch.");
+        };
+        log(`INFO: parsed ${parsedShows.length} shows`);
+        log(`FINISH: parsing ${parsedShows.length} shows`);
+        return parsedShows;
+    };
+
+    parse(shows, logger){
+        this.logger = logger;
+        return this.parseShowsFromTheList(shows);
+    }
+
+}
+
+class Executor {
 
     createClaimName(){
         var startTime = new Date().toString().replace(/[ :]/g,"-").replace(/[()]/g,"")
@@ -180,7 +335,7 @@ class Executor {
     initClaim(rootPath){
 
         let constructPaths = function(rootPath){
-            var directories = ["logs", "metadata", "tmp", "shows", "parsedShows"]
+            var directories = ["logs", "html", "metadata", "tmp", "shows", "parsedShows"]
             for (var i = 0; i < directories.length; i++){
                 mkdirp.sync(path.resolve(rootPath, directories[i]))
             }
@@ -208,78 +363,6 @@ class Executor {
 
     }
 
-    getShows(){
-
-        var self = this;
-        var log = (string, type) => self.logger.log(string, type);
-        var theListURL = "https://www.uncorp.net/list/index.html";
-
-        return new Promise(
-
-            function (resolve, reject){
-
-                var shows = []
-                log(`START : Scraping ${theListURL} for upcoming concerts`);
-                request(theListURL, (error, response, html) => {
-                  if (!error && response.statusCode == 200) {
-                    let $ = cheerio.load(html);
-
-                    // grab all of the dates
-                    let $allDays = $('.day');
-
-                    $allDays.each((number, text)=> {
-                        // at this level, we can grab the date and number of shows on that date
-
-                        let date = $(text).find('.date').clone().find('span').remove().end().text();
-                        let numberOfShows = $(text).find('span').text()
-                        let $allShows = $(text).find('.show');
-
-
-                        $allShows.each((number, text)=> {
-                            // at this level we can grab venue and attributes for a show
-
-                            let $where = $(text).find('.where')
-                            let venue = $where.find('a:first-child').text()
-
-                            let attributes = $where.clone().find('a').remove().end().text();
-
-                            let $allBands = $(text).find('.band');
-
-                            $allBands.each((number, text)=> {
-                                // at this level I get the text for individual bands
-                                // appearing at a show. Sometimes this will have postfix
-                                // info, i.e. Band Name (sat) or Band Name (Portland)
-
-                                let band = $(text).text()
-                                shows.push({
-                                    date: date,
-                                    numberOfShows: numberOfShows,
-                                    venue: venue,
-                                    attributes: attributes,
-                                    band: band
-                                });
-                            });
-                        });
-                    });
-
-                    if (shows.length > 0) {
-                        log(`INFO: Found ${shows.length} shows`);
-                        log(`FINISH: Scraping ${theListURL} for upcoming concerts`);
-                        resolve(shows);
-                    } else {
-                        log("Found no shows.", "error");
-                        reject("No shows found.");
-                    }
-
-
-                  } else {
-                    reject(error || response.statusCode);
-                  }
-
-                });
-        });
-    };
-
     logBatchTime(){
         var self = this;
         var log = (string, type) => self.logger.log(string, type);
@@ -304,131 +387,28 @@ class Executor {
         );
     }
 
-    saveToFile(json, directory, filename){
-        var self = this;
-        var log = (string, type) => self.logger.log(string, type);
-
-        return new Promise(
-            function (resolve, reject){
-                try {
-                    if (typeof filename == "undefined") {
-                        var filename = directory
-                    }
-                    var outputPath = path.resolve(self.claimRootPath, directory, `${filename}.json`)
-                    log(`BEGIN : writing to ${outputPath}`);
-                    fs.writeFileSync(outputPath, JSON.stringify(json));
-                    log(`FINISH: writing to ${outputPath}`);
-                    resolve()
-                } catch(e) {
-                    reject(e);
-                }
-            }
-        );
+    saveToFile(content, directory, filename){
+        const log = (string, type) => this.logger.log(string, type);
+        const outputPath = path.resolve(this.claimRootPath, directory, (filename || directory + ".json") )
+        log(`BEGIN : writing to ${outputPath}`);
+        fs.writeFileSync(outputPath, JSON.stringify(content));
+        log(`FINISH: writing to ${outputPath}`);
     }
 
     readFromFile(directory, filename){
-        var self = this;
-        var log = (string, type) => self.logger.log(string, type);
-
-        return new Promise(
-            function (resolve, reject){
-                try {
-                    if (typeof filename == "undefined") {
-                        var filename = directory
-                    }
-                    var inputPath = path.resolve(self.claimRootPath, directory, `${filename}.json`)
-                    log(`BEGIN : reading from ${inputPath}`);
-                    var json = JSON.parse(fs.readFileSync(inputPath));
-                    log(`INFO: read ${json.length} items`);
-                    log(`FINISH: reading from ${inputPath}`);
-                    resolve(json)
-                } catch(e) {
-                    reject(e);
-                }
-            }
-        );
+        const log = (string, type) => this.logger.log(string, type);
+        const inputPath = path.resolve(this.claimRootPath, directory, (filename || directory + ".json") )
+        log(`BEGIN : reading from ${inputPath}`);
+        const content = JSON.parse(fs.readFileSync(inputPath));
+        log(`INFO: read ${content.length} items`);
+        log(`FINISH: reading from ${inputPath}`);
+        return content;
     }
-
-    parseShow(date, numberOfShows, venue, attributes, band){
-        // date: "Tue 9 Feb 2016"
-        // numberOfShows: "2 shows"
-        // venue: "Great American Music Hall"
-
-        let timeRegEx = /^.*\s([\d\:\/pm]+pm).*$/;
-        let time = this.regexFind(attributes, timeRegEx);
-
-        let soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
-        let soldOut = this.regexFind(attributes, soldOutRegEx);
-
-        let pitRegEx = /^.*?\s([pP]it!).*$/;
-        let pit = this.regexFind(attributes, pitRegEx);
-
-        let multiDayRegEx = /^.*?\s(Multi-day event).*$/;
-        let multiDay = this.regexFind(attributes, multiDayRegEx);
-
-        let agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
-        let ages = this.regexFind(attributes, agesRegEx);
-
-        let priceRegEx = /^.*(\$[^\s\)]+|free).*$/;
-        let price = this.regexFind(attributes, priceRegEx);
-
-        // time: "6:30pm/7:30pm" or "7:00am"...
-        // soldOut: "sold out" or "fri sold out"
-        // pit: "Pit!"
-        // multiDay: "Multi-day event"
-        // ages: "a/a" or "21+" ...
-        // price: "$45"
-        // band: "Wu-tang Clan"
-        //
-        return({
-            band: band,
-            date: date,
-            numberOfShows: numberOfShows,
-            venue: venue,
-            time: time,
-            soldOut: soldOut,
-            pit: pit,
-            multiDay: multiDay,
-            ages: ages,
-            price: price
-        });
-    }
-
-    parseShows(shows){
-        var self = this;
-        var log = (string, type) => self.logger.log(string, type);
-
-        return new Promise(
-            function (resolve, reject){
-                try {
-                    log(`BEGIN : parsing ${shows.length} shows`);
-                    var parsedShows = []
-                    for (var i = shows.length - 1; i >= 0; i--) {
-                        var date = shows[i]["date"]
-                        var numberOfShows = shows[i]["numberOfShows"]
-                        var venue = shows[i]["venue"]
-                        var attributes = shows[i]["attributes"]
-                        var band = shows[i]["band"]
-                        //log(`INFO: parsing ${date} | ${band} | ${venue}`)
-                        var parsedShow = self.parseShow(date, numberOfShows, venue, attributes, band)
-                        parsedShows.push(parsedShow)
-                    };
-                    if (parsedShows.length != shows.length) {
-                        reject("Show length mismatch.");
-                    };
-                    log(`INFO: parsed ${parsedShows.length} items`);
-                    log(`FINISH: parsing ${parsedShows.length} shows`);
-                    resolve(parsedShows)
-                } catch(e) {
-                    reject(e);
-                }
-            }
-        );
-    }
-
 
     execute(){
         var executionStack = ()=> {
+
+            const theListURL = "https://www.uncorp.net/list/index.html"
 
             this.logger = new WinstonLogger({
                 type: "console",
@@ -437,17 +417,30 @@ class Executor {
                 prettyPrint: true
             });
 
+            this.downloader = new Downloader();
+            this.scraper = new Scraper();
+            this.parser = new Parser();
+
             this.batchStartTime = new Date();
 
             this.initClaim(this.config.rootPath);
 
-            this.getShows()
+            this.downloader.downloadHTML(theListURL, this.logger)
 
-                .then((shows) => this.saveToFile(shows, "shows"))
-                .then(() => this.readFromFile("shows"))
+                .then((html) => {
+                    this.saveToFile(html, "html", "index.html");
+                    const htmlFromDisk = this.readFromFile("html", "index.html");
 
-                .then((shows) => this.parseShows(shows))
-                .then((parsedShows) => this.saveToFile(parsedShows, "parsedShows"))
+                    const shows = this.scraper.scrape(htmlFromDisk, this.logger);
+
+                    this.saveToFile(shows, "shows");
+                    const showsFromDisk = this.readFromFile("shows");
+
+                    const parsedShows = this.parser.parse(showsFromDisk, this.logger);
+
+                    this.saveToFile(parsedShows, "parsedShows");
+
+                })
 
                 .then(()=> this.logBatchTime())
                 .catch((error)=>{
@@ -475,7 +468,4 @@ var mainExport = function(rootPath, options){
     executor.execute()
 }
 
-module.exports = mainExport
-
-// var executor = new Executor()
-// executor.execute()
+module.exports = mainExport;
