@@ -151,9 +151,13 @@ class WinstonLogger extends Logger {
 
 class Downloader {
 
-    downloadHTML(url, logger){
+    constructor(logger){
+        this.logger = logger;
+    }
 
-        const log = (string, type)=> logger.log(string, type);
+    downloadHTML(url){
+
+        const log = (string, type)=> this.logger.log(string, type);
 
         return new Promise(
 
@@ -175,6 +179,10 @@ class Downloader {
 }
 
 class Scraper {
+
+    constructor(logger){
+        this.logger = logger;
+    };
 
     scrapeShowsFromTheList(html){
 
@@ -213,11 +221,11 @@ class Scraper {
 
                     let band = $(text).text()
                     shows.push({
-                        date: date,
-                        numberOfShows: numberOfShows,
-                        venue: venue,
-                        attributes: attributes,
-                        band: band
+                        date,
+                        numberOfShows,
+                        venue,
+                        attributes,
+                        band
                     });
                 });
             });
@@ -232,14 +240,13 @@ class Scraper {
         }
     };
 
-    scrape(html, logger){
-        this.logger = logger;
-        return this.scrapeShowsFromTheList(html);
-    }
-
 }
 
 class Parser {
+
+    constructor(logger){
+        this.logger = logger;
+    }
 
     regexFind(str, regex) {
         // takes a string and a regex, returns the substring if
@@ -310,21 +317,56 @@ class Parser {
             parsedShows.push(parsedShow)
         };
         if (parsedShows.length != shows.length) {
-            reject("Show length mismatch.");
+            throw new Error("Show length mismatch.");
         };
         log(`INFO: parsed ${parsedShows.length} shows`);
         log(`FINISH: parsing ${parsedShows.length} shows`);
         return parsedShows;
     };
 
-    parse(shows, logger){
-        this.logger = logger;
-        return this.parseShowsFromTheList(shows);
-    }
+}
 
+class Repository {
+    constructor(logger){
+        this.logger = logger;
+    };
+
+    saveToFile(content, directory, filename){
+        console.log("here")
+        const log = (string, type) => this.logger.log(string, type);
+        const outputPath = path.resolve(directory, (filename || directory + ".json") )
+        log(`BEGIN : writing to ${outputPath}`);
+        fs.writeFileSync(outputPath, JSON.stringify(content));
+        log(`FINISH: writing to ${outputPath}`);
+    };
+
+    readFromFile(directory, filename){
+        const log = (string, type) => this.logger.log(string, type);
+        const inputPath = path.resolve(directory, (filename || directory + ".json") )
+        log(`BEGIN : reading from ${inputPath}`);
+        const content = JSON.parse(fs.readFileSync(inputPath));
+        log(`INFO: read ${content.length} items`);
+        log(`FINISH: reading from ${inputPath}`);
+        return content;
+    };
 }
 
 class Executor {
+
+    constructor(){
+
+        this.logger = new WinstonLogger({
+            type: "console",
+            label: "the-list-logger",
+            colorize: true,
+            prettyPrint: true
+        });
+
+        this.downloader = new Downloader(this.logger);
+        this.scraper = new Scraper(this.logger);
+        this.parser = new Parser(this.logger);
+        this.repository = new Repository(this.logger);
+    }
 
     createClaimName(){
         var startTime = new Date().toString().replace(/[ :]/g,"-").replace(/[()]/g,"")
@@ -361,95 +403,53 @@ class Executor {
         fs.appendFileSync(path.resolve(claimRootPath, "metadata/claimName.txt"), name);
         log(`Claim saved to ${path.resolve(claimRootPath, "metadata/claim.txt")}`);
 
-    }
+    };
 
-    logBatchTime(){
-        var self = this;
-        var log = (string, type) => self.logger.log(string, type);
-
-        return new Promise(
-            function (resolve, reject){
-                try {
-                    var batchEndTime = new Date();
-                    var batchTime = batchEndTime - self.batchStartTime;
-
-                    var hours = Math.floor(batchTime / 36e5);
-                    var minutes = Math.floor(batchTime % 36e5 / 60000);
-                    var seconds = Math.floor(batchTime % 60000 / 1000);
-                    var result = `${(hours < 10 ? "0" + hours : hours)}:${(minutes < 10 ? "0" + minutes : minutes)}:${(seconds  < 10 ? "0" + seconds : seconds)}`;
-
-                    log(`Batch completed in: ${result}`);
-                    resolve();
-                } catch(e) {
-                    reject(e);
-                }
-            }
-        );
-    }
-
-    saveToFile(content, directory, filename){
+    logBatchTime(batchStartTime){
         const log = (string, type) => this.logger.log(string, type);
-        const outputPath = path.resolve(this.claimRootPath, directory, (filename || directory + ".json") )
-        log(`BEGIN : writing to ${outputPath}`);
-        fs.writeFileSync(outputPath, JSON.stringify(content));
-        log(`FINISH: writing to ${outputPath}`);
-    }
 
-    readFromFile(directory, filename){
-        const log = (string, type) => this.logger.log(string, type);
-        const inputPath = path.resolve(this.claimRootPath, directory, (filename || directory + ".json") )
-        log(`BEGIN : reading from ${inputPath}`);
-        const content = JSON.parse(fs.readFileSync(inputPath));
-        log(`INFO: read ${content.length} items`);
-        log(`FINISH: reading from ${inputPath}`);
-        return content;
-    }
+        const batchEndTime = new Date();
+        const batchTime = batchEndTime - batchStartTime;
+
+        const hours = Math.floor(batchTime / 36e5);
+        const minutes = Math.floor(batchTime % 36e5 / 60000);
+        const seconds = Math.floor(batchTime % 60000 / 1000);
+        const result = `${(hours < 10 ? "0" + hours : hours)}:${(minutes < 10 ? "0" + minutes : minutes)}:${(seconds  < 10 ? "0" + seconds : seconds)}`;
+
+        log(`Batch completed in: ${result}`);
+    };
 
     execute(){
-        var executionStack = ()=> {
 
-            const theListURL = "https://www.uncorp.net/list/index.html"
+        const theListURL = "https://www.uncorp.net/list/index.html"
 
-            this.logger = new WinstonLogger({
-                type: "console",
-                label: "the-list-logger",
-                colorize: true,
-                prettyPrint: true
-            });
+        this.batchStartTime = new Date();
+        const {downloader, scraper, parser, repository, logger, config, batchStartTime} = this;
 
-            this.downloader = new Downloader();
-            this.scraper = new Scraper();
-            this.parser = new Parser();
+        this.initClaim(config.rootPath);
 
-            this.batchStartTime = new Date();
+        downloader.downloadHTML(theListURL)
 
-            this.initClaim(this.config.rootPath);
+            .then((html) => {
+                repository.saveToFile(html, path.resolve(this.claimRootPath, "html"), "index.html");
+                const htmlFromDisk = repository.readFromFile(path.resolve(this.claimRootPath, "html"), "index.html");
 
-            this.downloader.downloadHTML(theListURL, this.logger)
+                const shows = scraper.scrapeShowsFromTheList(htmlFromDisk);
 
-                .then((html) => {
-                    this.saveToFile(html, "html", "index.html");
-                    const htmlFromDisk = this.readFromFile("html", "index.html");
+                repository.saveToFile(shows, path.resolve(this.claimRootPath, "shows"));
+                const showsFromDisk = repository.readFromFile(path.resolve(this.claimRootPath, "shows"));
 
-                    const shows = this.scraper.scrape(htmlFromDisk, this.logger);
+                const parsedShows = parser.parseShowsFromTheList(showsFromDisk);
 
-                    this.saveToFile(shows, "shows");
-                    const showsFromDisk = this.readFromFile("shows");
+                repository.saveToFile(parsedShows, path.resolve(this.claimRootPath, "parsedShows"));
+                this.logBatchTime(batchStartTime);
 
-                    const parsedShows = this.parser.parse(showsFromDisk, this.logger);
+            })
 
-                    this.saveToFile(parsedShows, "parsedShows");
+            .catch((error)=>{
+                this.logger.error(error);
+            })
 
-                })
-
-                .then(()=> this.logBatchTime())
-                .catch((error)=>{
-                    this.logger.error(error);
-                })
-
-        }
-
-        executionStack()
     }
 }
 
@@ -468,4 +468,4 @@ var mainExport = function(rootPath, options){
     executor.execute()
 }
 
-module.exports = mainExport;
+export default mainExport;
