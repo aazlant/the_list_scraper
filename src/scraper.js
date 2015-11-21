@@ -2,14 +2,13 @@ import cheerio from 'cheerio';
 
 class Scraper {
 
-    constructor(logger){
+    constructor(logger) {
         this.logger = logger;
-    };
+    }
 
-    scrapeShowsFromTheList(html){
-
+    scrapeShowsFromTheList(html) {
         const log = (string, type) => this.logger.log(string, type);
-        const shows = []
+        const shows = [];
 
         log(`START : Scraping HTML for upcoming concerts`);
 
@@ -18,36 +17,37 @@ class Scraper {
         // grab all of the dates
         const $allDays = $('.day');
 
-        $allDays.each((number, text)=> {
+
+        $allDays.each((dayNumber, dayText)=> {
             // at this level, we can grab the date and number of shows on that date
 
-            const date = $(text).find('.date').clone().find('span').remove().end().text();
-            const numberOfShows = $(text).find('span').text()
-            const $allShows = $(text).find('.show');
+            const date = $(dayText).find('.date').clone().find('span').remove().end().text();
+            const numberOfShows = $(dayText).find('span').text();
+            const $allShows = $(dayText).find('.show');
 
 
-            $allShows.each((number, text)=> {
+            $allShows.each((showNumber, showText)=> {
                 // at this level we can grab venue and attributes for a show
 
-                const $where = $(text).find('.where')
-                const venue = $where.find('a:first-child').text()
+                const $where = $(showText).find('.where');
+                const venue = $where.find('a:first-child').text();
 
                 const attributes = $where.clone().find('a').remove().end().text();
 
-                const $allBands = $(text).find('.band');
+                const $allBands = $(showText).find('.band');
 
-                $allBands.each((number, text)=> {
+                $allBands.each((bandNumber, bandText)=> {
                     // at this level I get the text for individual bands
                     // appearing at a show. Sometimes this will have postfix
                     // info, i.e. Band Name (sat) or Band Name (Portland)
 
-                    let band = $(text).text()
+                    const band = $(bandText).text();
                     shows.push({
                         date,
                         numberOfShows,
                         venue,
                         attributes,
-                        band
+                        band,
                     });
                 });
             });
@@ -56,11 +56,12 @@ class Scraper {
         if (shows.length > 0) {
             log(`INFO: Found ${shows.length} shows`);
             log(`FINISH: Scraping HTML for upcoming concerts`);
-            return shows;
         } else {
-            throw new Error("No shows to scrape.")
+            throw new Error('No shows to scrape.');
         }
-    };
+
+        return shows;
+    }
 
 }
 

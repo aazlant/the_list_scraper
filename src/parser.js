@@ -1,6 +1,6 @@
 class Parser {
 
-    constructor(logger){
+    constructor(logger) {
         this.logger = logger;
     }
 
@@ -8,15 +8,14 @@ class Parser {
         // takes a string and a regex, returns the substring if
         // it exists, otherwise null
         const result = str.match(regex);
+        let returnValue = null;
         if (result) {
-            return result[1]
-        } else {
-            return null;
+            returnValue = result[1];
         }
-    };
+        return returnValue;
+    }
 
-    parseShowFromTheList(show){
-
+    parseShowFromTheList(show) {
         const {date, numberOfShows, venue, attributes, band} = show;
         // date: "Tue 9 Feb 2016"
         // numberOfShows: "2 shows"
@@ -50,7 +49,7 @@ class Parser {
         // price: "$45"
         // band: "Wu-tang Clan"
         //
-        return({
+        return {
             band,
             date,
             numberOfShows,
@@ -60,26 +59,29 @@ class Parser {
             pit,
             multiDay,
             ages,
-            price
-        });
-    };
+            price,
+        };
+    }
 
-    parseShowsFromTheList(shows){
+    parseShowsFromTheList(shows) {
         const log = (string, type) => this.logger.log(string, type);
         log(`BEGIN : parsing ${shows.length} shows`);
-        const parsedShows = []
-        for (var i = shows.length - 1; i >= 0; i--) {
-            const parsedShow = this.parseShowFromTheList(shows[i])
-            parsedShows.push(parsedShow)
-        };
-        if (parsedShows.length != shows.length) {
-            throw new Error("Show length mismatch.");
-        };
+
+        const parsedShows = [];
+        for (let i = shows.length - 1; i >= 0; i--) {
+            const parsedShow = this.parseShowFromTheList(shows[i]);
+            parsedShows.push(parsedShow);
+        }
+
+        if (parsedShows.length !== shows.length) {
+            throw new Error('Show length mismatch.');
+        }
+
         log(`INFO: parsed ${parsedShows.length} shows`);
         log(`FINISH: parsing ${parsedShows.length} shows`);
         return parsedShows;
-    };
+    }
 
-};
+}
 
 export default Parser;

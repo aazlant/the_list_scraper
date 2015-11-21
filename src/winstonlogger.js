@@ -1,4 +1,4 @@
-import Logger from "./logger"
+import Logger from './logger';
 import winston from 'winston';
 
 class WinstonLogger extends Logger {
@@ -15,115 +15,107 @@ class WinstonLogger extends Logger {
     //     filename: 'pathName'
     // }
 
-    constructor(options){
-
+    constructor(options) {
         super();
-        let transports = [];
+        const transports = [];
         const {type, ...rest} = options;
 
         const defaults = {
-            level: "info",
+            level: 'info',
             json: false,
             colorize: false,
-            prettyPrint: false
+            prettyPrint: false,
         };
 
         const optionsWithDefaults = {...defaults, ...rest};
 
         const {label, level, json, colorize, prettyPrint, filename} = optionsWithDefaults;
 
-        if (type.includes("console")) {
+        if (type.includes('console')) {
             transports.push( new (winston.transports.Console)({
                 label,
                 level,
                 json,
                 colorize,
-                prettyPrint
+                prettyPrint,
             }));
-        };
+        }
 
-        if (type.includes("file")) {
+        if (type.includes('file')) {
             transports.push( new (winston.transports.File)({
                 label,
                 level,
                 json,
-                filename
+                filename,
             }));
-        };
+        }
 
         this.logger = new (winston.Logger)({
-            transports
-        })
+            transports,
+        });
+    }
 
-    };
-
-    addTransport(options){
-
+    addTransport(options) {
         const {type, ...rest} = options;
 
         const defaults = {
-            level: "info",
+            level: 'info',
             json: false,
             colorize: false,
-            prettyPrint: false
+            prettyPrint: false,
         };
 
         const optionsWithDefaults = {...defaults, ...rest};
 
-        const {label, level, json, colorize, prettyPrint, filename} = optionsWithDefaults;
+        const {level, json, colorize, prettyPrint, filename} = optionsWithDefaults;
 
-        if (type.includes("console")) {
+        if (type.includes('console')) {
             this.logger.add(winston.transports.Console, {
                 level,
                 json,
                 colorize,
-                prettyPrint
+                prettyPrint,
             });
-        };
+        }
 
-        if (type.includes("file")) {
+        if (type.includes('file')) {
             this.logger.add(winston.transports.File, {
                 level,
                 json,
-                filename
+                filename,
             });
-        };
+        }
+    }
 
-    };
-
-    removeTransport(type){
-
-        if (type == "console") {
+    removeTransport(type) {
+        if (type === 'console') {
             self.logger.remove(winston.transports.Console);
-        };
+        }
 
-        if (type == "file") {
+        if (type === 'file') {
             self.logger.remove(winston.transports.File);
-        };
+        }
+    }
 
-    };
-
-    log(message, type){
-
+    log(message, type) {
         const date = new Date();
         const messageWithMetadata = `${date.toString()}_PROCESS_${process.pid}_winston_import_the_list ${message}`;
 
-        switch(type){
-            case "error":
-                this.logger.error(messageWithMetadata);
-                break;
-            case "warn":
-                this.logger.warn(messageWithMetadata);
-                break;
-            case "info":
-                this.logger.info(messageWithMetadata);
-                break;
-            default:
-                this.logger.info(messageWithMetadata);
+        switch (type) {
+        case 'error':
+            this.logger.error(messageWithMetadata);
+            break;
+        case 'warn':
+            this.logger.warn(messageWithMetadata);
+            break;
+        case 'info':
+            this.logger.info(messageWithMetadata);
+            break;
+        default:
+            this.logger.info(messageWithMetadata);
         }
+    }
 
-    };
-
-};
+}
 
 export default WinstonLogger;

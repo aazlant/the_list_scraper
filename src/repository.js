@@ -2,29 +2,32 @@ import fs from 'fs';
 import path from 'path';
 
 class Repository {
-    constructor(logger){
+    constructor(logger) {
         this.logger = logger;
-    };
+    }
 
-    saveToFile(content, directory, filename){
+    saveToFile(content, root, directory, filename) {
         const log = (string, type) => this.logger.log(string, type);
-        const outputPath = path.resolve(directory, (filename || directory + ".json") )
+        const outputPath = path.resolve(root, directory, (filename || directory + '.json') );
         log(`BEGIN : writing to ${outputPath}`);
         fs.writeFileSync(outputPath, JSON.stringify(content));
         log(`FINISH: writing to ${outputPath}`);
-    };
+    }
 
-    readFromFile(directory, filename){
+    readFromFile(root, directory, filename) {
         const log = (string, type) => this.logger.log(string, type);
-        const inputPath = path.resolve(directory, (filename || directory + ".json") )
+        const inputPath = path.resolve(root, directory, (filename || directory + '.json') );
+
         log(`BEGIN : reading from ${inputPath}`);
         const content = JSON.parse(fs.readFileSync(inputPath));
-        if (inputPath.includes(".json")){
+
+        if (inputPath.includes('.json')) {
             log(`INFO: read ${content.length} items`);
-        };
+        }
+
         log(`FINISH: reading from ${inputPath}`);
         return content;
-    };
+    }
 }
 
 export default Repository;

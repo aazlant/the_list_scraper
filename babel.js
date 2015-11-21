@@ -4,7 +4,7 @@ var parseArgs = require('minimist');
 
 if (require.main == module){
 
-    opts = {
+    var opts = {
         alias: {
             "r": "root"
         }
