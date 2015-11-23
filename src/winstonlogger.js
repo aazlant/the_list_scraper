@@ -89,11 +89,11 @@ class WinstonLogger extends Logger {
 
     removeTransport(type) {
         if (type === 'console') {
-            self.logger.remove(winston.transports.Console);
+            this.logger.remove(winston.transports.Console);
         }
 
         if (type === 'file') {
-            self.logger.remove(winston.transports.File);
+            this.logger.remove(winston.transports.File);
         }
     }
 
