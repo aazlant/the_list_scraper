@@ -4,11 +4,11 @@ import path from 'path';
 import mkdirp from 'mkdirp';
 
 // Entities
-import WinstonLogger from './src/winstonlogger';
-import Downloader from './src/downloader';
-import Scraper from './src/scraper';
-import Parser from './src/parser';
-import Repository from './src/repository';
+import WinstonLogger from '../src/winstonlogger';
+import Downloader from '../src/downloader';
+import Scraper from '../src/scraper';
+import Parser from '../src/parser';
+import Repository from '../src/repository';
 
 
 // Robert C. Martin Interactor / Entity (plugin) model

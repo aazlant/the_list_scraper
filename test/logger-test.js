@@ -1,11 +1,29 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai';
-import Logger from '../src/logger';
+import sinon from 'sinon';
+import Logger from '../src/Logger';
 
 describe('Logger', ()=> {
-    const logger = new Logger();
 
-    it('should call self.log(msg, error) on error()', () => {
-        // how do I test this?
+    it('should call self.log(msg, error) on error()', () => {        
+        const logger = new Logger()
+        const mockedLog = sinon.stub(logger, 'log');
+        logger.error("test message");
+        expect(mockedLog.calledWith("test message", "error")).to.be.ok;
     });
+
+    it('should call self.log(msg, warn) on warn()', () => {
+        const logger = new Logger()
+        const mockedLog = sinon.stub(logger, 'log');
+        logger.warn("test message");
+        expect(mockedLog.calledWith("test message", "warn")).to.be.ok;
+    });
+
+    it('should call self.log(msg, info) on info()', () => {
+        const logger = new Logger()
+        const mockedLog = sinon.stub(logger, 'log');
+        logger.info("test message");
+        expect(mockedLog.calledWith("test message", "info")).to.be.ok;
+    });
+
 });

@@ -10,7 +10,7 @@ class Logger {
         this.log(msg, 'info');
     }
 
-    log(msg, type) {        
+    log(msg, type) { // eslint-disable-line no-unused-vars        
         throw new Error('Not implemented');
     }
 }

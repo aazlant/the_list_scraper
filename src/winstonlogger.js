@@ -1,4 +1,4 @@
-import Logger from './logger';
+import Logger from './Logger';
 import winston from 'winston';
 
 class WinstonLogger extends Logger {
@@ -99,7 +99,7 @@ class WinstonLogger extends Logger {
 
     log(message, type) {
         const date = new Date();
-        const messageWithMetadata = `${date.toString()}_PROCESS_${process.pid}_winston_import_the_list ${message}`;
+        const messageWithMetadata = `${date.toISOString()}_PROCESS_${process.pid}_winston_import_the_list ${message}`;
 
         switch (type) {
         case 'error':

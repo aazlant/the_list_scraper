@@ -1,5 +1,5 @@
 require('babel/register');
-var scraper = require('./index.js');
+var scraper = require('./scripts/scrape_the_list_to_claim');
 var parseArgs = require('minimist');
 
 if (require.main == module){
