@@ -112,7 +112,7 @@ class WinstonLogger extends Logger {
             this.logger.info(messageWithMetadata);
             break;
         default:
-            this.logger.info(messageWithMetadata);
+            throw new Error('Require type.');
         }
     }
 

@@ -7,10 +7,9 @@ class Scraper {
     }
 
     scrapeShowsFromTheList(html) {
-        const log = (string, type) => this.logger.log(string, type);
         const shows = [];
 
-        log(`START : Scraping HTML for upcoming concerts`);
+        this.logger.info(`START : Scraping HTML for upcoming concerts`);
 
         const $ = cheerio.load(html);
 
@@ -54,8 +53,8 @@ class Scraper {
         });
 
         if (shows.length > 0) {
-            log(`INFO: Found ${shows.length} shows`);
-            log(`FINISH: Scraping HTML for upcoming concerts`);
+            this.logger.info(`INFO: Found ${shows.length} shows`);
+            this.logger.info(`FINISH: Scraping HTML for upcoming concerts`);
         } else {
             throw new Error('No shows to scrape.');
         }

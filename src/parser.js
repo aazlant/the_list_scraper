@@ -64,10 +64,10 @@ class Parser {
     }
 
     parseShowsFromTheList(shows) {
-        const log = (string, type) => this.logger.log(string, type);
-        log(`BEGIN : parsing ${shows.length} shows`);
+        this.logger.info(`BEGIN : parsing ${shows.length} shows`);
 
         const parsedShows = [];
+        
         for (let i = shows.length - 1; i >= 0; i--) {
             const parsedShow = this.parseShowFromTheList(shows[i]);
             parsedShows.push(parsedShow);
@@ -77,8 +77,8 @@ class Parser {
             throw new Error('Show length mismatch.');
         }
 
-        log(`INFO: parsed ${parsedShows.length} shows`);
-        log(`FINISH: parsing ${parsedShows.length} shows`);
+        this.logger.info(`INFO: parsed ${parsedShows.length} shows`);
+        this.logger.info(`FINISH: parsing ${parsedShows.length} shows`);
         return parsedShows;
     }
 

@@ -9,7 +9,8 @@ import WinstonLogger from '../src/WinstonLogger';
 import Downloader from '../src/Downloader';
 import Scraper from '../src/Scraper';
 import Parser from '../src/Parser';
-import FileRepository from '../src/Repository';
+import FileRawDataRepository from '../src/RawDataRepository/File';
+import FileParsedDataRepository from '../src/ParsedDataRepository/File';
 
 
 // Robert C. Martin Interactor / Entity (plugin) model
@@ -17,12 +18,13 @@ import FileRepository from '../src/Repository';
 
 class Interactor {
 
-    constructor(logger, downloader, scraper, parser, repository) {
+    constructor(logger, downloader, scraper, parser, fileRawDataRepository, fileParsedDataRepository) {
         this.logger = logger;
         this.downloader = downloader;
         this.scraper = scraper;
         this.parser = parser;
-        this.repository = repository;
+        this.fileRawDataRepository = fileRawDataRepository;
+        this.fileParsedDataRepository = fileParsedDataRepository;
     }
 
     createClaimName() {
@@ -33,7 +35,7 @@ class Interactor {
 
     initClaim(rootPath) {
         const constructPaths = (root) => {
-            const directories = ['logs', 'html', 'metadata', 'tmp', 'shows', 'parsedShows'];
+            const directories = ['logs', 'html', 'metadata', 'tmp', 'raw_shows', 'parsed_shows'];
             for (let i = 0; i < directories.length; i++) {
                 mkdirp.sync(path.resolve(root, directories[i]));
             }
@@ -43,7 +45,6 @@ class Interactor {
         this.claimRootPath = path.resolve(rootPath, this.name);
 
         const {name, claimRootPath, logger} = this;
-        const log = (message, type) => logger.log(message, type);
 
         constructPaths(claimRootPath);
 
@@ -55,13 +56,12 @@ class Interactor {
             filename: logFile,
         });
 
-        log('claimString generated: ' + name);
+        this.logger.info('claimString generated: ' + name);
         fs.appendFileSync(path.resolve(claimRootPath, 'metadata/claimName.txt'), name);
-        log(`Claim saved to ${path.resolve(claimRootPath, 'metadata/claim.txt')}`);
+        this.logger.info(`Claim saved to ${path.resolve(claimRootPath, 'metadata/claim.txt')}`);
     }
 
     logBatchTime(batchStartTime) {
-        const log = (string, type) => this.logger.log(string, type);
 
         const batchEndTime = new Date();
         const batchTime = batchEndTime - batchStartTime;
@@ -71,31 +71,33 @@ class Interactor {
         const seconds = Math.floor(batchTime % 60000 / 1000);
         const result = `${(hours < 10 ? '0' + hours : hours)}:${(minutes < 10 ? '0' + minutes : minutes)}:${(seconds < 10 ? '0' + seconds : seconds)}`;
 
-        log(`Batch completed in: ${result}`);
+        this.logger.info(`Batch completed in: ${result}`);
     }
 
     execute() {
         const theListURL = 'https://www.uncorp.net/list/index.html';
 
         this.batchStartTime = new Date();
-        const {downloader, scraper, parser, repository, config, batchStartTime} = this;
+        const {downloader, scraper, parser, fileRawDataRepository, fileParsedDataRepository, config, batchStartTime} = this;
 
         this.initClaim(config.rootPath);
+        fileRawDataRepository.setRootPath(this.claimRootPath);
+        fileParsedDataRepository.setRootPath(this.claimRootPath);        
 
         downloader.downloadHTML(theListURL)
 
             .then((html) => {
-                repository.saveToFile(html, this.claimRootPath, 'html', 'index.html');
-                const htmlFromDisk = repository.readFromFile(this.claimRootPath, 'html', 'index.html');
+                fileRawDataRepository.saveHTML('index.html', html);
+                const htmlFromDisk = fileRawDataRepository.fetchHTML('index.html');
 
                 const shows = scraper.scrapeShowsFromTheList(htmlFromDisk);
 
-                repository.saveToFile(shows, this.claimRootPath, 'shows');
-                const showsFromDisk = repository.readFromFile(this.claimRootPath, 'shows');
+                fileRawDataRepository.saveRawShows('raw_shows.json', shows);
+                const showsFromDisk = fileRawDataRepository.fetchRawShows('raw_shows.json');
 
                 const parsedShows = parser.parseShowsFromTheList(showsFromDisk);
 
-                repository.saveToFile(parsedShows, this.claimRootPath, 'parsedShows');
+                fileParsedDataRepository.saveParsedShows('parsed_shows.json', parsedShows);
                 this.logBatchTime(batchStartTime);
             })
 
@@ -142,9 +144,10 @@ const mainExport = (rootPath, options) => {
     const downloader = new Downloader(logger);
     const scraper = new Scraper(logger);
     const parser = new Parser(logger);
-    const repository = new FileRepository(logger);
+    const fileRawDataRepository = new FileRawDataRepository(logger);
+    const fileParsedDataRepository = new FileParsedDataRepository(logger);
 
-    const interactor = new Interactor(logger, downloader, scraper, parser, repository);
+    const interactor = new Interactor(logger, downloader, scraper, parser, fileRawDataRepository, fileParsedDataRepository);
     interactor.config = {
         rootPath: appRootPath,
     };
