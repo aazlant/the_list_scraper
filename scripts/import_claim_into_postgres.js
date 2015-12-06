@@ -8,7 +8,7 @@ import WinstonLogger from '../src/winstonlogger';
 import Downloader from '../src/downloader';
 import Scraper from '../src/scraper';
 import Parser from '../src/parser';
-import Repository from '../src/repository';
+import FileRepository from '../src/repository';
 
 
 // Robert C. Martin Interactor / Entity (plugin) model
@@ -141,7 +141,7 @@ const mainExport = (rootPath, options) => {
     const downloader = new Downloader(logger);
     const scraper = new Scraper(logger);
     const parser = new Parser(logger);
-    const repository = new Repository(logger);
+    const repository = new FileRepository(logger);
 
     const interactor = new Interactor(logger, downloader, scraper, parser, repository);
     interactor.config = {

@@ -12,9 +12,8 @@ describe('WinstonLogger', ()=> {
         winstonlogger = new WinstonLogger({
             type: 'console',
             label: 'mock-logger',
-        });
-        
-    });    
+        }); 
+    });
 
     it('should instantiate with a logger', () => {
         expect(winstonlogger.logger).to.exist;
@@ -38,9 +37,9 @@ describe('WinstonLogger', ()=> {
         const warn = sinon.spy();
         winstonlogger.logger.warn = warn;
 
-        winstonlogger.info("test message");
-        winstonlogger.error("test message");
-        winstonlogger.warn("test message");
+        winstonlogger.info('test message');
+        winstonlogger.error('test message');
+        winstonlogger.warn('test message');
 
         expect(info.calledWith(sinon.match(/PROCESS_\d+_winston.*test message$/))).to.be.ok;
         expect(error.calledWith(sinon.match(/PROCESS_\d+_winston.*test message$/))).to.be.ok;

@@ -4,10 +4,9 @@
   "description": "",
   "main": "babel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --compilers js:babel/register",
     "scraper": "export $(<.env)|babel-node ./scripts/scrape_the_list_to_claim.js",
-    "lint": "eslint -c .eslintrc index.js ./src/*.js",
-    "test": "mocha --compilers js:babel/register"
+    "lint": "eslint -c .eslintrc index.js ./src/*.js"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +26,7 @@
     "eslint-config-airbnb": "^1.0.0",
     "eslint-plugin-react": "^3.8.0",
     "mocha": "^2.3.4",
+    "nock": "^3.3.2",
     "sinon": "^1.17.2"
   }
 }
