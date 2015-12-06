@@ -9,7 +9,7 @@ import Logger from '../src/Logger';
 
 describe('Scraper', ()=> {
     const logger = new Logger();
-    const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars       
+    const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars
 
     const scraper = new Scraper(logger);
     const HTMLContent = fs.readFileSync(path.resolve(__dirname, './assets/sample.html'));

@@ -24,6 +24,7 @@ describe('Downloader', ()=> {
         downloader.downloadHTML(theListURL)
             .then((HTML)=>{
                 expect(HTML).to.eql(expectedContent);
+                done(); // eslint-disable-line no-undef       
             });
     });
 });
