@@ -1,3 +1,5 @@
+// #TODO: TEST
+
 import fs from 'fs';
 import path from 'path';
 
@@ -44,7 +46,7 @@ class FileParsedDataRepository extends ParsedDataRepository {
         this.saveToFile(path.resolve(this.rootPath, 'parsed_shows/', key), content);
     }
 
-    fetchedParsedShows(key) {
+    fetchParsedShows(key) {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }

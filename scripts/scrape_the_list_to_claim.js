@@ -62,7 +62,6 @@ class Interactor {
     }
 
     logBatchTime(batchStartTime) {
-
         const batchEndTime = new Date();
         const batchTime = batchEndTime - batchStartTime;
 
@@ -82,8 +81,8 @@ class Interactor {
 
         this.initClaim(config.rootPath);
         fileRawDataRepository.setRootPath(this.claimRootPath);
-        fileParsedDataRepository.setRootPath(this.claimRootPath);        
-
+        fileParsedDataRepository.setRootPath(this.claimRootPath);
+        
         downloader.downloadHTML(theListURL)
 
             .then((html) => {

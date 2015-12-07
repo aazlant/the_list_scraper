@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --compilers js:babel/register",
     "scraper": "export $(<.env)|babel-node ./scripts/scrape_the_list_to_claim.js",
-    "lint": "eslint -c .eslintrc index.js ./src/*.js"
+    "import": "export $(<.env)|babel-node ./scripts/import_claim_into_postgres.js",
+    "lint": "eslint -c .eslintrc index.js ./src/*.js",
   },
   "author": "",
   "license": "ISC",
