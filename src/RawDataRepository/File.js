@@ -1,4 +1,4 @@
-// #TODO: TEST, remove key variable
+// #TODO: TEST
 
 import fs from 'fs';
 import path from 'path';
