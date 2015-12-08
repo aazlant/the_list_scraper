@@ -10,7 +10,7 @@ import Logger from '../src/Logger';
 
 describe('Downloader', ()=> {
     const logger = new Logger();
-    const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars       
+    const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars
 
     const downloader = new Downloader(logger);
     const expectedContent = fs.readFileSync(path.resolve(__dirname, './assets/sample.html'));
@@ -24,7 +24,7 @@ describe('Downloader', ()=> {
         downloader.downloadHTML(theListURL)
             .then((HTML)=>{
                 expect(HTML).to.eql(expectedContent);
-                done(); // eslint-disable-line no-undef       
+                done(); // eslint-disable-line no-undef
             });
     });
 });

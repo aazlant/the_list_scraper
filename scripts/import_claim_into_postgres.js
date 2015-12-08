@@ -59,57 +59,24 @@ class Interactor {
     }
 }
 
-const mainExport = (rootPath, claimID, options) => {
-    let appRootPath;
-    let appClaimID;
+const mainExport = (options) => {
 
-    if (typeof rootPath === 'undefined') {
-        if (typeof options !== 'undefined') {
-            if ('rootPath' in options) {
-                appRootPath = options.rootPath;
-            } else {
-                throw new Error('No rootPath passed to application.');
-            }
-        } else {
-            throw new Error('No options hash passed to application');
+    if (options === null | typeof options === undefined) {       
+        throw new Error('No options hash passed to application');        
+    } else {
+        if (typeof options.dbConfig === 'undefined') {       
+            throw new Error('No db configuration passed to application');  
+        }
+        if (typeof options.rootPath === 'undefined') {       
+            throw new Error('No root path passed to application');  
+        }
+        if (typeof options.claimID === 'undefined') {       
+            throw new Error('No claim ID passed to application');  
         }
     }
-
-    if (typeof claimID === 'undefined') {
-        if (typeof options !== 'undefined') {
-            if ('claimID' in options) {
-                appClaimID = options.claimID;
-            } else {
-                throw new Error('No claimID passed to application.');
-            }
-        } else {
-            throw new Error('No options hash passed to application');
-        }
-    }
-
-    if (typeof options !== 'undefined') {
-        if ('rootPath' in options) {
-            appRootPath = options.rootPath;
-        } else {
-            throw new Error('No rootPath passed to application.');
-        }
-        if ('claimID' in options) {
-            appClaimID = options.claimID;
-        } else {
-            throw new Error('No appClaimID passed to application.');
-        }
-    }
-
-    if (typeof appRootPath === 'undefined') {
-        throw new Error('No rootPath passed to application.');
-    }
-
-    if (typeof appClaimID === 'undefined') {
-        throw new Error('No rootPath passed to application.');
-    }
-
+  
     const pgp = postgres();
-    const db = pgp({...options.db, database: options.db.name});
+    const db = pgp({...options.dbConfig, database: options.dbConfig.name});
 
     const logger = new WinstonLogger({
         type: 'console',
@@ -123,8 +90,8 @@ const mainExport = (rootPath, claimID, options) => {
 
     const interactor = new Interactor(logger, fileParsedDataRepository, dbParsedDataRepository);
     interactor.config = {
-        rootPath: appRootPath,
-        claimID: appClaimID,
+        rootPath: options.rootPath,
+        claimID: options.claimID,
     };
 
     interactor.execute().then(()=>{pgp.end()});
@@ -156,8 +123,8 @@ if (require.main === module) {
     const config = {
         rootPath: argv.root,
         claimID: argv.claim,
-        db: db,
+        dbConfig: db,
     };
 
-    mainExport(null, null, config);
+    mainExport(config);
 }
