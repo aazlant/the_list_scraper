@@ -1,4 +1,4 @@
-// #TODO: TEST
+// #TODO: TEST, remove key variable
 
 import fs from 'fs';
 import path from 'path';
@@ -38,36 +38,36 @@ class FileRawDataRepository extends RawDataRepository {
         return content;
     }
 
-    saveHTML(key, content) {
+    saveHTML(html) {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        this.saveToFile(path.resolve(this.rootPath, 'html/', key), content);
+        this.saveToFile(path.resolve(this.rootPath, 'html/index.html'), html);
     }
 
-    fetchHTML(key) {
+    fetchHTML() {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        return this.readFromFile(path.resolve(this.rootPath, 'html/', key));
+        return this.readFromFile(path.resolve(this.rootPath, 'html/index.html'));
     }
 
-    saveRawShows(key, content) {
+    saveRawShows(rawShows) {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        this.saveToFile(path.resolve(this.rootPath, 'raw_shows/', key), content);
+        this.saveToFile(path.resolve(this.rootPath, 'raw_shows/raw_shows.json'), rawShows);
     }
 
-    fetchRawShows(key) {
+    fetchRawShows() {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        return this.readFromFile(path.resolve(this.rootPath, 'raw_shows/', key));
+        return this.readFromFile(path.resolve(this.rootPath, 'raw_shows/raw_shows.json'));
     }
 
 }

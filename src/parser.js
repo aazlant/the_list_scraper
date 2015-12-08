@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 class Parser {
 
     constructor(logger) {
@@ -16,10 +18,13 @@ class Parser {
     }
 
     parseShowFromTheList(show) {
-        const {date, numberOfShows, venue, attributes, band} = show;
+        const {numberOfShows, venue, attributes, band} = show;
+        let {date} = show;
         // date: "Tue 9 Feb 2016"
         // numberOfShows: "2 shows"
         // venue: "Great American Music Hall"
+
+        date = moment(date, 'ddd D MMM YYYY').format();
 
         const { regexFind } = this;
 
@@ -27,7 +32,12 @@ class Parser {
         const time = regexFind(attributes, timeRegEx);
 
         const soldOutRegEx = /^.*?\s(\w*\ssold out|sold out).*$/;
-        const soldOut = regexFind(attributes, soldOutRegEx);
+        let soldOut = regexFind(attributes, soldOutRegEx);
+        if (soldOut === 'sold out') {
+            soldOut = true;
+        } else {
+            soldOut = false;
+        }        
 
         const pitRegEx = /^.*?\s([pP]it!).*$/;
         const pit = regexFind(attributes, pitRegEx);

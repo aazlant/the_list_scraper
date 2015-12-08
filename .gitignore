@@ -4,4 +4,6 @@ dist/
 *.iml
 webpack-stats.json
 npm-debug.log
-whatever/
+tmp/
+.env
+

@@ -38,20 +38,20 @@ class FileParsedDataRepository extends ParsedDataRepository {
         return content;
     }
 
-    saveParsedShows(key, content) {
+    saveParsedShows(parsedShows) {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        this.saveToFile(path.resolve(this.rootPath, 'parsed_shows/', key), content);
+        this.saveToFile(path.resolve(this.rootPath, 'parsed_shows/parsed_shows.json'), parsedShows);
     }
 
-    fetchParsedShows(key) {
+    fetchParsedShows() {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
-        return this.readFromFile(path.resolve(this.rootPath, 'parsed_shows/', key));
+        return this.readFromFile(path.resolve(this.rootPath, 'parsed_shows/parsed_shows.json'));
     }
 
 }

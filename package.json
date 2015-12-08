@@ -5,16 +5,19 @@
   "main": "babel.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register",
-    "scraper": "export $(<.env)|babel-node ./scripts/scrape_the_list_to_claim.js",
-    "import": "export $(<.env)|babel-node ./scripts/import_claim_into_postgres.js",
-    "lint": "eslint -c .eslintrc index.js ./src/*.js",
+    "scraper": "babel-node ./scripts/scrape_the_list_to_claim.js",
+    "import": "babel-node ./scripts/import_claim_into_postgres.js",
+    "lint": "eslint -c .eslintrc index.js ./src/*.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cheerio": "^0.19.0",
+    "dotenv": "^1.2.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.10.6",
+    "pg-promise": "^2.7.2",
     "request": "^2.60.0",
     "winston": "^2.1.0"
   },

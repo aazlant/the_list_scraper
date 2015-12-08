@@ -82,21 +82,21 @@ class Interactor {
         this.initClaim(config.rootPath);
         fileRawDataRepository.setRootPath(this.claimRootPath);
         fileParsedDataRepository.setRootPath(this.claimRootPath);
-        
+
         downloader.downloadHTML(theListURL)
 
             .then((html) => {
-                fileRawDataRepository.saveHTML('index.html', html);
-                const htmlFromDisk = fileRawDataRepository.fetchHTML('index.html');
+                fileRawDataRepository.saveHTML(html);
+                const htmlFromDisk = fileRawDataRepository.fetchHTML();
 
-                const shows = scraper.scrapeShowsFromTheList(htmlFromDisk);
+                const rawShows = scraper.scrapeShowsFromTheList(htmlFromDisk);
 
-                fileRawDataRepository.saveRawShows('raw_shows.json', shows);
-                const showsFromDisk = fileRawDataRepository.fetchRawShows('raw_shows.json');
+                fileRawDataRepository.saveRawShows(rawShows);
+                const rawShowsFromDisk = fileRawDataRepository.fetchRawShows();
 
-                const parsedShows = parser.parseShowsFromTheList(showsFromDisk);
+                const parsedShows = parser.parseShowsFromTheList(rawShowsFromDisk);
 
-                fileParsedDataRepository.saveParsedShows('parsed_shows.json', parsedShows);
+                fileParsedDataRepository.saveParsedShows(parsedShows);
                 this.logBatchTime(batchStartTime);
             })
 
