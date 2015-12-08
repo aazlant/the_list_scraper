@@ -1,6 +1,6 @@
 # the_list_scraper
 
-1. Scrapes https://www.uncorp.net/list/index.html and parses the results, producing a claim that contains a json file for import into a database.
+1) Scrapes https://www.uncorp.net/list/index.html and parses the results, producing a claim that contains a json file for import into a database.
 
 *Usage:* `npm run scraper -- -r {root directory}`
 
@@ -15,7 +15,7 @@ Produces a claim directory in root with
        |-raw_shows\raw_shows.json
        \-tmp\
 
-2. Copies the parsed shows from a claim into a postgres DB instance
+2) Copies the parsed shows from a claim into a postgres DB instance
 
 Requires an `.env` file with the following:
 
