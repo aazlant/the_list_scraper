@@ -109,6 +109,7 @@ class Interactor {
 const mainExport = (rootPath, options) => {
     let appRootPath;
 
+    // #TODO: clean up this logic
     if (typeof rootPath === 'undefined') {
         if (typeof options !== 'undefined') {
             if ('rootPath' in options) {

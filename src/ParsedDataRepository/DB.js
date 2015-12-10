@@ -11,59 +11,63 @@ class DB extends ParsedDataRepository {
     setRootPath(rootPath) {
     }
 
-    saveParsedShows(parsedShows) {
-        // {"band":"Phases","date":"Sun 16 Oct 2016","numberOfShows":"total_shows","venue":"Arena, Oakland","time":"6:30pm/7:30pm","soldOut":null,"pit":null,"multiDay":null,"ages":"a/a","price":"$30.50"}
+    async saveParsedShows(parsedShows) {
+        try {
+            // {"band":"Phases","date":"Sun 16 Oct 2016","numberOfShows":"total_shows","venue":"Arena, Oakland","time":"6:30pm/7:30pm","soldOut":null,"pit":null,"multiDay":null,"ages":"a/a","price":"$30.50"}
 
-        // show:
-        //     id serial,
-        //     date datetime,
-        //     venue varchar,
-        //     price varchar,
-        //     is_sold bool,
-        //     ages varchar,
-            
-        // show_artist:
-        //     id serial,
-        //     show_id int,
-        //     artist_id int
-            
-        // artist:
-        //     id serial,
-        //     name varchar
+            // shows:
+            //     id serial,
+            //     date datetime,
+            //     venue varchar,
+            //     price varchar,
+            //     is_sold bool,
+            //     ages varchar,            
+            // show_artist:
+            //     id serial,
+            //     show_id int,
+            //     artist_id int            
+            // artist:
+            //     id serial,
+            //     name varchar
 
-        return new Promise(
+            for (const parsedShow of parsedShows) {
+                const date = new Date(parsedShow.date);
+                let artist;
+                let show;
+                let join;
 
-            (resolve, reject) => {
-                const promises = [];
-
-                const permitDupes = (error)=> {
+                try { 
+                    artist = await this.db.one('INSERT INTO artist (name) VALUES (${name}) RETURNING id', { name: parsedShow.band });
+                    this.logger.info(`saved artist "${parsedShow.band}" to db as ID#:${artist.id}`);
+                } catch (error) {
                     if (error.message.includes('duplicate key value violates')) {
-                        this.logger.warn('Duplicate entry.');
-                        return;
-                    }                
-                    throw error;
-                };
-
-                for (const show of parsedShows) {
-                    const date = new Date(show.date);
-                    promises.push(this.db.query('INSERT INTO artist (name) VALUES (${name})', { name: show.band })
-                        .then(()=>{
-                            this.logger.info(`inserted: {name: ${show.band}}`);
-                        })
-                        .catch(permitDupes)
-                    );
-                    promises.push(
-                        this.db.query('INSERT INTO shows (venue, price, is_sold, ages, date) VALUES (${venue}, ${price}, ${soldOut}, ${ages}, ${date})', { venue: show.venue, price: show.price, soldOut: show.soldOut, ages: show.ages, date: date })
-                        .then(()=>{
-                            this.logger.info(`inserted: {venue: ${show.venue}, price: ${show.price}, soldOut: ${show.soldOut}, ages: ${show.ages}, date: ${date}}`);
-                        })
-                        .catch(permitDupes)
-                    );
+                        artist = await this.db.one('SELECT id FROM artist WHERE name = ${name}', { name: parsedShow.band });
+                        this.logger.warn(`duplicate artist "${parsedShow.band}" to db as ID#:${artist.id}`);
+                    }
                 }
 
-                Promise.all(promises).then(()=>{resolve()}).catch((error)=>{reject(error)});
+                try { 
+                    show = await this.db.one('INSERT INTO shows (venue, price, is_sold, ages, date) VALUES (${venue}, ${price}, ${soldOut}, ${ages}, ${date}) RETURNING id', { venue: parsedShow.venue, price: parsedShow.price, soldOut: parsedShow.soldOut, ages: parsedShow.ages, date: date });
+                    this.logger.info(`saved show for artist "${parsedShow.band}" on ${date} at "${parsedShow.venue}" to db as ID#:${show.id}`);
+                } catch (error) {
+                    if (error.message.includes('duplicate key value violates')) {
+                        show = await this.db.one('SELECT id FROM shows WHERE venue = ${venue} AND date = ${date}', { venue: parsedShow.venue, date: date });
+                    }
+                }
+
+                try { 
+                    join = await this.db.one('INSERT INTO show_artist (show_id, artist_id) VALUES (${show_id}, ${artist_id}) RETURNING id', { show_id: show.id, artist_id: artist.id});
+                    this.logger.info(`saved join show ID#:${show.id} and artist ID#:${artist.id} as ID#:${join.id}`);
+                } catch (error) {
+                    if (error.message.includes('duplicate key value violates')) {
+                        join = await this.db.one('SELECT id FROM show_artist WHERE show_id = ${show_id} AND artist_id = ${artist_id}', { show_id: show.id, artist_id: artist.id});
+                    }
+                }
             }
-        );
+
+        } catch (error) {            
+            this.logger.error(error);
+        }
     }
 
     fetchedParsedShows() {

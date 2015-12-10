@@ -39,16 +39,16 @@ class Interactor {
                 this.batchStartTime = new Date();
                 const {unsanitizedParsedDataRepository, sanitizedParsedDataRepository, batchStartTime, config} = this;
 
-                this.claimRootPath = path.resolve(config.rootPath, config.claimID);
-                this.unsanitizedParsedDataRepository.setRootPath(this.claimRootPath);
-                        
-                const parsedShows = unsanitizedParsedDataRepository.fetchParsedShows();
+                this.claimRootPath = path.resolve(config.rootPath, config.claimID);                
+                unsanitizedParsedDataRepository.setRootPath(this.claimRootPath);
+
+                const parsedShows = unsanitizedParsedDataRepository.fetchParsedShows();                
                 this.logger.info(`Claim retrieved from ${this.claimRootPath}`);
 
                 sanitizedParsedDataRepository.saveParsedShows(parsedShows)
                     .then(()=>{
                         this.logBatchTime(batchStartTime);
-                        resolve();                    
+                        resolve();
                     })
                     .catch((error)=>{
                         this.logger.error(error);

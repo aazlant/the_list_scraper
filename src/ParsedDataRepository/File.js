@@ -1,4 +1,4 @@
-// #TODO: TEST
+// #TODO: TEST, convert functions to async
 
 import fs from 'fs';
 import path from 'path';
@@ -46,7 +46,7 @@ class FileParsedDataRepository extends ParsedDataRepository {
         this.saveToFile(path.resolve(this.rootPath, 'parsed_shows/parsed_shows.json'), parsedShows);
     }
 
-    fetchParsedShows() {
+    fetchParsedShows() {        
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
