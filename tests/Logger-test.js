@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import Logger from '../src/Logger';
 
 describe('Logger', ()=> {
-    it('should call self.log(msg, error) on error()', () => {        
+    it('should call self.log(msg, error) on error()', () => {
         const logger = new Logger();
         const mockedLog = sinon.stub(logger, 'log');
         logger.error('test message');

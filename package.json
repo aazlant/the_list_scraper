@@ -4,7 +4,7 @@
   "description": "",
   "main": "babel.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register",
+    "test": "mocha tests --compilers js:babel/register",
     "scraper": "babel-node ./scripts/scrape_the_list_to_claim.js",
     "import": "babel-node ./scripts/import_claim_into_postgres.js",
     "lint": "eslint -c .eslintrc index.js ./src/*.js"

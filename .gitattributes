@@ -1,1 +1,2 @@
-./test/assets/* linguist-vendored
+/tests/fixtures/* linguist-vendored
+*.html linguist-vendored

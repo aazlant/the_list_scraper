@@ -13,7 +13,7 @@ describe('Downloader', ()=> {
     const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars
 
     const downloader = new Downloader(logger);
-    const expectedContent = fs.readFileSync(path.resolve(__dirname, './assets/sample.html'));
+    const expectedContent = fs.readFileSync(path.resolve(__dirname, './fixtures/sample.html'));
     const theListURL = 'https://www.uncorp.net/list/';
 
     it('should download the correct HTML from a URL', () => {

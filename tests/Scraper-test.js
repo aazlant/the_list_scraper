@@ -12,8 +12,8 @@ describe('Scraper', ()=> {
     const mockedLog = sinon.stub(logger, 'log'); // eslint-disable-line no-unused-vars
 
     const scraper = new Scraper(logger);
-    const HTMLContent = fs.readFileSync(path.resolve(__dirname, './assets/sample.html'));
-    const expectedContent = JSON.parse(fs.readFileSync(path.resolve(__dirname, './assets/scraped_sample.json')));
+    const HTMLContent = fs.readFileSync(path.resolve(__dirname, './fixtures/sample.html'));
+    const expectedContent = JSON.parse(fs.readFileSync(path.resolve(__dirname, './fixtures/scraped_sample.json')));
 
     it('should produce the correct output after scraping input', () => {
         const scrapedContent = scraper.scrapeShowsFromTheList(HTMLContent);
