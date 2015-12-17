@@ -99,6 +99,7 @@ class DB extends ParsedDataRepository {
                 const show = await this.fetchParsedShow(showArtist.artist_id, showArtist.show_id);
                 shows.push(show);
             }
+            return shows;
         } catch (error) {
             this.logger.error(error);
         }
