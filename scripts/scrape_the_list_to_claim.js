@@ -5,12 +5,12 @@ import mkdirp from 'mkdirp';
 import parseArgs from 'minimist';
 
 // Entities
-import WinstonLogger from '../src/WinstonLogger';
-import Downloader from '../src/Downloader';
-import Scraper from '../src/Scraper';
-import Parser from '../src/Parser';
-import FileRawDataRepository from '../src/RawDataRepository/File';
-import FileParsedDataRepository from '../src/ParsedDataRepository/File';
+import WinstonLogger from '../src/cli/WinstonLogger';
+import Downloader from '../src/cli/Downloader';
+import Scraper from '../src/cli/Scraper';
+import Parser from '../src/cli/Parser';
+import FileRawDataRepository from '../src/cli/RawDataRepository/File';
+import FileParsedDataRepository from '../src/common/ParsedDataRepository/File';
 
 
 // Robert C. Martin Interactor / Entity (plugin) model

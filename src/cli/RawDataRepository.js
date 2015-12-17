@@ -2,7 +2,7 @@
 
 class RawDataRepository {
 
-    setRootPath(rootPath){// eslint-disable-line no-unused-vars
+    setRootPath(rootPath) { // eslint-disable-line no-unused-vars
         throw new Error('Not implemented');
     }
 

@@ -37,13 +37,23 @@ class Parser {
             soldOut = true;
         } else {
             soldOut = false;
-        }        
+        }
 
         const pitRegEx = /^.*?\s([pP]it!).*$/;
-        const pit = regexFind(attributes, pitRegEx);
+        let pit = regexFind(attributes, pitRegEx);
+        if (pit === 'Pit!') {
+            pit = true;
+        } else {
+            pit = false;
+        }
 
         const multiDayRegEx = /^.*?\s(Multi-day event).*$/;
-        const multiDay = regexFind(attributes, multiDayRegEx);
+        let multiDay = regexFind(attributes, multiDayRegEx);
+        if (multiDay === 'Multi-day event') {
+            multiDay = true;
+        } else {
+            multiDay = false;
+        }
 
         const agesRegEx = /^.*(21\s*\+|6\s*\+|18\s*\+|a\/a).*$/;
         const ages = regexFind(attributes, agesRegEx);
@@ -77,7 +87,7 @@ class Parser {
         this.logger.info(`BEGIN : parsing ${shows.length} shows`);
 
         const parsedShows = [];
-        
+
         for (let i = shows.length - 1; i >= 0; i--) {
             const parsedShow = this.parseShowFromTheList(shows[i]);
             parsedShows.push(parsedShow);

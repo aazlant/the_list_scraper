@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import postgres from 'pg-promise';
 
 // Entities
-import WinstonLogger from '../src/WinstonLogger';
-import FileParsedDataRepository from '../src/ParsedDataRepository/File';
-import DBParsedDataRepository from '../src/ParsedDataRepository/DB';
+import WinstonLogger from '../src/cli/WinstonLogger';
+import FileParsedDataRepository from '../src/common/ParsedDataRepository/File';
+import DBParsedDataRepository from '../src/common/ParsedDataRepository/DB';
 
 // Robert C. Martin Interactor / Entity (plugin) model
 // https://vimeo.com/97530863
@@ -14,9 +14,9 @@ import DBParsedDataRepository from '../src/ParsedDataRepository/DB';
 class Interactor {
 
     constructor(logger, fileParsedDataRepository, dbParsedDataRepository) {
-        this.logger = logger;        
-        this.unsanitizedParsedDataRepository = fileParsedDataRepository;        
-        this.sanitizedParsedDataRepository = dbParsedDataRepository;        
+        this.logger = logger;
+        this.unsanitizedParsedDataRepository = fileParsedDataRepository;
+        this.sanitizedParsedDataRepository = dbParsedDataRepository;
     }
 
     logBatchTime(batchStartTime) {
@@ -39,10 +39,10 @@ class Interactor {
                 this.batchStartTime = new Date();
                 const {unsanitizedParsedDataRepository, sanitizedParsedDataRepository, batchStartTime, config} = this;
 
-                this.claimRootPath = path.resolve(config.rootPath, config.claimID);                
+                this.claimRootPath = path.resolve(config.rootPath, config.claimID);
                 unsanitizedParsedDataRepository.setRootPath(this.claimRootPath);
 
-                const parsedShows = unsanitizedParsedDataRepository.fetchParsedShows();                
+                const parsedShows = unsanitizedParsedDataRepository.fetchParsedShows();
                 this.logger.info(`Claim retrieved from ${this.claimRootPath}`);
 
                 sanitizedParsedDataRepository.saveParsedShows(parsedShows)
@@ -60,21 +60,20 @@ class Interactor {
 }
 
 const mainExport = (options) => {
-
     if (options === null | typeof options === undefined) {       
-        throw new Error('No options hash passed to application');        
+        throw new Error('No options hash passed to application');
     } else {
-        if (typeof options.dbConfig === 'undefined') {       
-            throw new Error('No db configuration passed to application');  
+        if (typeof options.dbConfig === 'undefined') {
+            throw new Error('No db configuration passed to application');
         }
-        if (typeof options.rootPath === 'undefined') {       
-            throw new Error('No root path passed to application');  
+        if (typeof options.rootPath === 'undefined') {
+            throw new Error('No root path passed to application');
         }
-        if (typeof options.claimID === 'undefined') {       
-            throw new Error('No claim ID passed to application');  
+        if (typeof options.claimID === 'undefined') {
+            throw new Error('No claim ID passed to application');
         }
     }
-  
+
     const pgp = postgres();
     const db = pgp({...options.dbConfig, database: options.dbConfig.name});
 
@@ -94,7 +93,7 @@ const mainExport = (options) => {
         claimID: options.claimID,
     };
 
-    interactor.execute().then(()=>{pgp.end()});
+    interactor.execute().then(()=>{pgp.end();});
 };
 
 export default mainExport;
