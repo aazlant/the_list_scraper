@@ -57,90 +57,59 @@ class DB extends ParsedDataRepository {
         }
     }
 
-    async fetchShowArtist(id) {
-        try {
-            const showArtist = await this.db.one('SELECT * FROM artist_shows WHERE id = ${id}', {id: id});
-            return showArtist;
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
+    buildArtistHashFromArtistsByShow(artistsByShow) {
+        const showArtistsHash = {};
 
-    async fetchShow(id) {
-        try {
-            const showArtist = await this.db.one('SELECT * FROM shows WHERE id = ${id}', {id: id});
-            return showArtist;
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    async fetchArtist(id) {
-        try {
-            const artist = await this.db.one('SELECT name FROM artist WHERE id = ${id}', {id: id});
-            return artist;
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    async fetchParsedShow(artistId, showId) {
-        const artist = await this.fetchArtist(artistId);
-        const artistName = artist.name;
-        const show = await this.fetchShow(showId);
-        return {
-            'band': artistName,
-            'date': show.date,
-            'venue': show.venue,
-            'time': show.time,
-            'soldOut': show.is_sold,
-            'pit': show.pit,
-            'multiDay': show.multi_day,
-            'ages': show.ages,
-            'price': show.price,
-        };
-    }
-
-    async fetchArtistsByShow(id) {
-        try {
-            const artists = await this.db.query(
-                'SELECT artist.* FROM artist INNER JOIN artist_shows ON artist.id = artist_shows.artist_id AND artist_shows.show_id=${id}',
-                 {id: id}
-            );
-            return artists.map((artist)=> { return artist.name });
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    async fetchParsedShowsbyShows(shows) {
-        try {
-            const parsedShows = [];
-            for (const show of shows) {
-                const artists = await this.fetchArtistsByShow(show.id);
-                parsedShows.push({
-                    'bands': artists,
-                    'date': show.date,
-                    'venue': show.venue,
-                    'time': show.time,
-                    'soldOut': show.is_sold,
-                    'pit': show.pit,
-                    'multiDay': show.multi_day,
-                    'ages': show.ages,
-                    'price': show.price,
-                });
+        for (const artist of artistsByShow) {
+            if (!(artist.show_id in showArtistsHash)) {
+                showArtistsHash[artist.show_id] = [artist.name];
+            } else {
+                showArtistsHash[artist.show_id].push(artist.name);
             }
-            return parsedShows;
-        } catch (error) {
-            this.logger.error(error);
         }
+
+        return showArtistsHash;
+    }
+
+    buildParsedShows(shows, artistsHash) {
+        const parsedShows = [];
+        for (const show of shows) {
+            const artists = artistsHash[show.id];
+            parsedShows.push({
+                'bands': artists,
+                'date': show.date,
+                'venue': show.venue,
+                'time': show.time,
+                'soldOut': show.is_sold,
+                'pit': show.pit,
+                'multiDay': show.multi_day,
+                'ages': show.ages,
+                'price': show.price,
+            });
+        }
+        return parsedShows;
     }
 
     async fetchParsedShowsWithGroupedBands() {
         try {
-            const shows = await this.db.query('SELECT * FROM shows ORDER BY date');
-            const parsedShows = await this.fetchParsedShowsbyShows(shows);
+            const shows = await this.db.query(`
+                SELECT shows.* FROM shows ORDER BY date
+            `);
+
+            const artistsByShow = await this.db.query(`
+                SELECT artist_shows.show_id, artist.*
+                    FROM artist_shows
+                    INNER JOIN artist ON artist_shows.artist_id = artist.id
+                    WHERE artist_shows.show_id IN (SELECT shows.id
+                        FROM shows)
+            `);
+
+            const artistsHash = this.buildArtistHashFromArtistsByShow(artistsByShow);
+
+            const parsedShows = this.buildParsedShows(shows, artistsHash);
+
             return parsedShows;
+
         } catch (error) {
             this.logger.error(error);
         }
@@ -148,21 +117,26 @@ class DB extends ParsedDataRepository {
 
     async fetchParsedShowsWithGroupedBandsAfterToday() {
         try {
-            const parsedShows = await this.db.query(`
-              SELECT
-                array_agg(bands) bands,
-                shows.*
-              FROM shows
-              JOIN (
-                SELECT show_id, array_agg(artist.name)
-                FROM artist_shows
-                JOIN artist ON (artist_shows.artist_id = artist.id)
-                GROUP BY show_id
-              ) bands ON bands.show_id = shows.id
-              WHERE date >= now()
-              ORDER BY date
+            const shows = await this.db.query(`
+                SELECT shows.* FROM shows WHERE date >= now() ORDER BY date
             `);
+
+
+            const artistsByShow = await this.db.query(`
+                SELECT artist_shows.show_id, artist.*
+                    FROM artist_shows
+                    INNER JOIN artist ON artist_shows.artist_id = artist.id
+                    WHERE artist_shows.show_id IN (SELECT shows.id
+                        FROM shows
+                        WHERE date >= now())
+            `);
+
+            const artistsHash = this.buildArtistHashFromArtistsByShow(artistsByShow);
+
+            const parsedShows = this.buildParsedShows(shows, artistsHash);
+
             return parsedShows;
+
         } catch (error) {
             this.logger.error(error);
         }
@@ -170,12 +144,14 @@ class DB extends ParsedDataRepository {
 
     async fetchParsedShows() {
         try {
-            const parsedShows = [];
-            const showArtists = await this.db.query('SELECT * FROM artist_shows ORDER BY date');
-            for (const showArtist of showArtists) {
-                const parsedShow = await this.fetchParsedShow(showArtist.artist_id, showArtist.show_id);
-                parsedShows.push(parsedShow);
-            }
+            const parsedShows = await this.db.query(`
+                SELECT artist.name, shows.date, shows.venue, shows.time, shows.is_sold, shows.pit, shows.multi_day, shows.ages, shows.price
+                FROM artist_shows
+                INNER JOIN artist ON artist_shows.artist_id = artist.id
+                INNER JOIN shows ON artist_shows.show_id = shows.id
+                ORDER by date
+            `);
+
             return parsedShows;
         } catch (error) {
             this.logger.error(error);

@@ -18,8 +18,11 @@ class Parser {
     }
 
     parseShowFromTheList(show) {
-        const {numberOfShows, venue, attributes, band} = show;
-        let {date} = show;
+        const {numberOfShows, venue, attributes} = show;
+        let {band, date} = show;
+
+        band = band.replace(/\([^)]*\)/, '').trim();
+
         // date: "Tue 9 Feb 2016"
         // numberOfShows: "2 shows"
         // venue: "Great American Music Hall"
