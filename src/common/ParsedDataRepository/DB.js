@@ -1,4 +1,4 @@
-// #TODO: TEST, OPTIMIZE QUERIES
+// #TODO: TEST
 
 import ParsedDataRepository from '../ParsedDataRepository';
 
@@ -109,7 +109,6 @@ class DB extends ParsedDataRepository {
             const parsedShows = this.buildParsedShows(shows, artistsHash);
 
             return parsedShows;
-
         } catch (error) {
             this.logger.error(error);
         }
@@ -136,7 +135,6 @@ class DB extends ParsedDataRepository {
             const parsedShows = this.buildParsedShows(shows, artistsHash);
 
             return parsedShows;
-
         } catch (error) {
             this.logger.error(error);
         }
