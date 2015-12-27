@@ -46,12 +46,16 @@ class FileParsedDataRepository extends ParsedDataRepository {
         this.saveToFile(path.resolve(this.rootPath, 'parsed_shows/parsed_shows.json'), parsedShows);
     }
 
-    fetchParsedShows() {        
+    fetchParsedShows() {
         if (!this.rootPath) {
             throw new Error('No root path yet assigned to repository');
         }
 
         return this.readFromFile(path.resolve(this.rootPath, 'parsed_shows/parsed_shows.json'));
+    }
+
+    async fetchParsedShowsWithGroupedBands(key) {// eslint-disable-line no-unused-varss
+        throw new Error('Not implemented');
     }
 
 }

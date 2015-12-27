@@ -16,6 +16,15 @@ class ParsedDataRepository {
         throw new Error('Not implemented');
     }
 
+    async fetchParsedShowsWithGroupedBands(key) { // eslint-disable-line no-unused-vars
+        throw new Error('Not implemented');
+    }
+
+    async fetchParsedShowsWithGroupedBandsAfterToday(key) { // eslint-disable-line no-unused-vars
+        throw new Error('Not implemented');
+    }
+
+
 }
 
 export default ParsedDataRepository;

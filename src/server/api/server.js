@@ -5,9 +5,12 @@ import dotenv from 'dotenv';
 
 dotenv.load();
 
-const server = new Hapi.Server(); // 8080 is the port to listen
+const server = new Hapi.Server();
+
+// #TODO: error-check
+
 server.connection({port: process.env.APISERVER_PORT});
-server.register([ asyncHandler ]);
+server.register([ asyncHandler ], ()=>{});
 
 server.route(routes);
 

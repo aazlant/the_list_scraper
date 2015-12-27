@@ -1,4 +1,4 @@
-// #TODO: TEST
+// #TODO: TEST, OPTIMIZE QUERIES
 
 import ParsedDataRepository from '../ParsedDataRepository';
 
@@ -43,11 +43,11 @@ class DB extends ParsedDataRepository {
                 }
 
                 try {
-                    join = await this.db.one('INSERT INTO show_artist (show_id, artist_id) VALUES (${show_id}, ${artist_id}) RETURNING id', { show_id: show.id, artist_id: artist.id});
+                    join = await this.db.one('INSERT INTO artist_shows (show_id, artist_id) VALUES (${show_id}, ${artist_id}) RETURNING id', { show_id: show.id, artist_id: artist.id});
                     this.logger.info(`saved join show ID#:${show.id} and artist ID#:${artist.id} as ID#:${join.id}`);
                 } catch (error) {
                     if (error.message.includes('duplicate key value violates')) {
-                        join = await this.db.one('SELECT id FROM show_artist WHERE show_id = ${show_id} AND artist_id = ${artist_id}', { show_id: show.id, artist_id: artist.id});
+                        join = await this.db.one('SELECT id FROM artist_shows WHERE show_id = ${show_id} AND artist_id = ${artist_id}', { show_id: show.id, artist_id: artist.id});
                         this.logger.warn(`duplicate join between show ID#:${show.id} and artist ID#:${artist.id} already in db as ID#:${join.id}`);
                     }
                 }
@@ -59,7 +59,7 @@ class DB extends ParsedDataRepository {
 
     async fetchShowArtist(id) {
         try {
-            const showArtist = await this.db.one('SELECT * FROM show_artist WHERE id = ${id}', {id: id});
+            const showArtist = await this.db.one('SELECT * FROM artist_shows WHERE id = ${id}', {id: id});
             return showArtist;
         } catch (error) {
             this.logger.error(error);
@@ -77,8 +77,8 @@ class DB extends ParsedDataRepository {
 
     async fetchArtist(id) {
         try {
-            const showArtist = await this.db.one('SELECT * FROM artist WHERE id = ${id}', {id: id});
-            return showArtist;
+            const artist = await this.db.one('SELECT name FROM artist WHERE id = ${id}', {id: id});
+            return artist;
         } catch (error) {
             this.logger.error(error);
         }
@@ -88,18 +88,95 @@ class DB extends ParsedDataRepository {
         const artist = await this.fetchArtist(artistId);
         const artistName = artist.name;
         const show = await this.fetchShow(showId);
-        return {'band': artistName, 'date': show.date, 'venue': show.venue, 'time': show.time, 'soldOut': show.soldOut, 'pit': show.pit, 'multiDay': show.multiDay, 'ages': show.ages, 'price': show.price};
+        return {
+            'band': artistName,
+            'date': show.date,
+            'venue': show.venue,
+            'time': show.time,
+            'soldOut': show.is_sold,
+            'pit': show.pit,
+            'multiDay': show.multi_day,
+            'ages': show.ages,
+            'price': show.price,
+        };
+    }
+
+    async fetchArtistsByShow(id) {
+        try {
+            const artists = await this.db.query(
+                'SELECT artist.* FROM artist INNER JOIN artist_shows ON artist.id = artist_shows.artist_id AND artist_shows.show_id=${id}',
+                 {id: id}
+            );
+            return artists.map((artist)=> { return artist.name });
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    async fetchParsedShowsbyShows(shows) {
+        try {
+            const parsedShows = [];
+            for (const show of shows) {
+                const artists = await this.fetchArtistsByShow(show.id);
+                parsedShows.push({
+                    'bands': artists,
+                    'date': show.date,
+                    'venue': show.venue,
+                    'time': show.time,
+                    'soldOut': show.is_sold,
+                    'pit': show.pit,
+                    'multiDay': show.multi_day,
+                    'ages': show.ages,
+                    'price': show.price,
+                });
+            }
+            return parsedShows;
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    async fetchParsedShowsWithGroupedBands() {
+        try {
+            const shows = await this.db.query('SELECT * FROM shows ORDER BY date');
+            const parsedShows = await this.fetchParsedShowsbyShows(shows);
+            return parsedShows;
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    async fetchParsedShowsWithGroupedBandsAfterToday() {
+        try {
+            const parsedShows = await this.db.query(`
+              SELECT
+                array_agg(bands) bands,
+                shows.*
+              FROM shows
+              JOIN (
+                SELECT show_id, array_agg(artist.name)
+                FROM artist_shows
+                JOIN artist ON (artist_shows.artist_id = artist.id)
+                GROUP BY show_id
+              ) bands ON bands.show_id = shows.id
+              WHERE date >= now()
+              ORDER BY date
+            `);
+            return parsedShows;
+        } catch (error) {
+            this.logger.error(error);
+        }
     }
 
     async fetchParsedShows() {
         try {
-            const shows = [];
-            const showArtists = await this.db.query('SELECT * FROM show_artist');
+            const parsedShows = [];
+            const showArtists = await this.db.query('SELECT * FROM artist_shows ORDER BY date');
             for (const showArtist of showArtists) {
-                const show = await this.fetchParsedShow(showArtist.artist_id, showArtist.show_id);
-                shows.push(show);
+                const parsedShow = await this.fetchParsedShow(showArtist.artist_id, showArtist.show_id);
+                parsedShows.push(parsedShow);
             }
-            return shows;
+            return parsedShows;
         } catch (error) {
             this.logger.error(error);
         }

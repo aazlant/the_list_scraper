@@ -38,7 +38,7 @@ const showsRoute = {
         handler: {
             async: async (request, reply)=> {
                 try {
-                    const shows = await dbParsedDataRepository.fetchParsedShows();
+                    const shows = await dbParsedDataRepository.fetchParsedShowsWithGroupedBandsAfterToday();
                     reply(shows);
                 } catch (error) {
                     console.error(error);
