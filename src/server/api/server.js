@@ -1,18 +1,5 @@
-import Hapi from 'hapi';
-import asyncHandler from 'hapi-async-handler';
-import routes from './routes';
-import dotenv from 'dotenv';
-
-dotenv.load();
-
-const server = new Hapi.Server();
-
-// #TODO: error-check
-
-server.connection({port: process.env.APISERVER_PORT});
-server.register([ asyncHandler ], ()=>{});
-
-server.route(routes);
+require('babel-register');
+const server = require('./api');
 
 server.start( ()=> {
     console.log(`----\n==> 🌎  API is running on at: ${server.info.uri}`);

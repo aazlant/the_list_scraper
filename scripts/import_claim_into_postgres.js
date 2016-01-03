@@ -60,7 +60,7 @@ class Interactor {
 }
 
 const mainExport = (options) => {
-    if (options === null | typeof options === undefined) {       
+    if (options === null | typeof options === undefined) {
         throw new Error('No options hash passed to application');
     } else {
         if (typeof options.dbConfig === 'undefined') {
