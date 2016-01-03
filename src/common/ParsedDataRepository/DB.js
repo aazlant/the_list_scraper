@@ -120,6 +120,7 @@ class DB extends ParsedDataRepository {
                 SELECT shows.* FROM shows WHERE date >= now() ORDER BY date
             `);
 
+            console.log(shows);
 
             const artistsByShow = await this.db.query(`
                 SELECT artist_shows.show_id, artist.*

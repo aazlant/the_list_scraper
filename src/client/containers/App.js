@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchShowsIfNeeded, invalidateShows } from '../actions';
-import Shows from '../components/Shows';
+import ShowsPanel from '../components/ShowsPanel';
 
 class App extends Component {
   constructor(props) {
@@ -19,9 +19,9 @@ class App extends Component {
       dispatch(fetchShowsIfNeeded());
   }
 
+  // QUESTION: should dispatch() propagate down to components?
   handleRefreshClick(e) {
       e.preventDefault();
-
       const { dispatch } = this.props;
       dispatch(invalidateShows());
       dispatch(fetchShowsIfNeeded());
@@ -30,33 +30,7 @@ class App extends Component {
   render() {
       const { items, isFetching, lastUpdated } = this.props;
       return (
-        <div>
-          <p>
-            {lastUpdated &&
-              <span>
-                Last updated at {new Date(lastUpdated).toLocaleTimeString()}.
-                {' '}
-              </span>
-            }
-            {!isFetching &&
-              <a href="#"
-                 onClick={this.handleRefreshClick}>
-                Refresh
-              </a>
-            }
-          </p>
-          {isFetching && items.length === 0 &&
-            <h2>Loading...</h2>
-          }
-          {!isFetching && items.length === 0 &&
-            <h2>Empty.</h2>
-          }
-          {items.length > 0 &&
-            <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-              <Shows items={items} />
-            </div>
-          }
-        </div>
+        <ShowsPanel items={items} lastUpdated={lastUpdated} isFetching={isFetching} handleRefreshClick={this.handleRefreshClick}/>
       );
   }
 }
@@ -69,14 +43,14 @@ App.propTypes = {
 };
 
 function mapStateToProps(state) {
-    const { shows } = state
+    const { shows } = state;
     const {
       isFetching,
       lastUpdated,
       items,
     } = shows || {
         isFetching: true,
-        items: undefined,
+        items: [],
     };
 
     return {

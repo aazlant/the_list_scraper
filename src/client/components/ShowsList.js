@@ -1,7 +1,7 @@
-import React, { PropTypes, Component } from 'react'
+import React, { PropTypes, Component } from 'react';
 import moment from 'moment';
 
-export default class Shows extends Component {
+export default class ShowsList extends Component {
   render() {
       return (
         <ul>
@@ -19,7 +19,6 @@ export default class Shows extends Component {
   }
 }
 
-Shows.propTypes = {
-  items: PropTypes.array.isRequired,
+ShowsList.propTypes = {
+    items: PropTypes.array.isRequired,
 };
-
