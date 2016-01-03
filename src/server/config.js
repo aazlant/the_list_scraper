@@ -1,4 +1,4 @@
-const port = process.env.APPSERVER_PORT || 3000;
+const appPort = process.env.APPSERVER_PORT || 3000;
 const apiHost = process.env.APIHOST || 'localhost';
 const apiPort = process.env.APISERVER_PORT || 8080;
 
@@ -11,7 +11,7 @@ const dbConfig = {
 };
 
 module.exports = Object.assign({
-    port,
+    appPort,
     apiPort,
     apiHost,
     dbConfig,

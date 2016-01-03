@@ -1,39 +1,44 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 import {
   INVALIDATE_SHOWS,
   REQUEST_SHOWS, RECEIVE_SHOWS,
-} from '../actions'
+} from '../actions';
 
 
 function shows(state = {
-  isFetching: false,
-  didInvalidate: false,
-  items: []
+    isFetching: false,
+    didInvalidate: false,
+    items: [],
 }, action) {
-  switch (action.type) {
+    switch (action.type) {
+
     case INVALIDATE_SHOWS:
-      return Object.assign({}, state, {
-        didInvalidate: true
-      })
+        return Object.assign({}, state, {
+            didInvalidate: true,
+        });
+
     case REQUEST_SHOWS:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
-      })
+        return Object.assign({}, state, {
+            isFetching: true,
+            didInvalidate: false,
+        });
+
     case RECEIVE_SHOWS:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.items,
-        lastUpdated: action.receivedAt
-      })
+        return Object.assign({}, state, {
+            isFetching: false,
+            didInvalidate: false,
+            items: action.items,
+            lastUpdated: action.receivedAt,
+        });
+
     default:
-      return state
-  }
+        return state;
+
+    }
 }
 
 const rootReducer = combineReducers({
-  shows
-})
+    shows,
+});
 
-export default rootReducer
+export default rootReducer;
