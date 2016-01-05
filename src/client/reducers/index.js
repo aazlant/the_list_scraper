@@ -1,3 +1,5 @@
+// #TODO: refactor with immutablejs
+
 import { combineReducers } from 'redux';
 import {
   INVALIDATE_SHOWS,

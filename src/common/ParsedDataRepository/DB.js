@@ -76,15 +76,16 @@ class DB extends ParsedDataRepository {
         for (const show of shows) {
             const artists = artistsHash[show.id];
             parsedShows.push({
-                'bands': artists,
-                'date': show.date,
-                'venue': show.venue,
-                'time': show.time,
-                'soldOut': show.is_sold,
-                'pit': show.pit,
-                'multiDay': show.multi_day,
-                'ages': show.ages,
-                'price': show.price,
+                id: show.id,
+                bands: artists,
+                date: show.date,
+                venue: show.venue,
+                time: show.time,
+                soldOut: show.is_sold,
+                pit: show.pit,
+                multiDay: show.multi_day,
+                ages: show.ages,
+                price: show.price,
             });
         }
         return parsedShows;
@@ -119,8 +120,6 @@ class DB extends ParsedDataRepository {
             const shows = await this.db.query(`
                 SELECT shows.* FROM shows WHERE date >= now() ORDER BY date
             `);
-
-            console.log(shows);
 
             const artistsByShow = await this.db.query(`
                 SELECT artist_shows.show_id, artist.*

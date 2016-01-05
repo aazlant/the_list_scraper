@@ -6,11 +6,11 @@ export default class ShowsList extends Component {
       return (
         <ul>
           {this.props.items.map((item) =>
-            <li>
+            <li key={item.id}>
               <p>{moment(item.date).format('MMMM Do, YYYY')}</p>
               <p>{item.venue}</p>
-              {item.bands.map((band)=>
-                <div><b>{band}</b></div>
+              {item.bands.map((band, i)=>
+                <div key={i}><b>{band}</b></div>
               )}
             </li>
           )}
