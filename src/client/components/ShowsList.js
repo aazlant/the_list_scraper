@@ -43,9 +43,11 @@ const buildShowItemsByDate = (items)=> {
     return shows;
 };
 
+const globalStyle = {fontSize: '12px', marginLeft: '2em', fontFamily: 'verdana'};
+const dateStyle = {fontSize: '14px'};
 const showsStyle = {marginBottom: '1em'};
 const showStyle = {marginLeft: '1em', marginTop: '1em', marginBottom: '1em'};
-const showItem = {marginRight: '2em', marginTop: '.5em'};
+const showItemStyle = {marginRight: '2em', marginTop: '.5em'};
 const bandStyle = {marginLeft: '4em', fontStyle: 'italic'};
 
 export default class ShowsList extends Component {
@@ -53,18 +55,18 @@ export default class ShowsList extends Component {
       const items = buildShowItemsByDate(this.props.items);
 
       return (
-        <ul>
+        <div style={globalStyle}>
           {items.map((item)=>{
               // #TODO: move below to subcomponents
-              return (<li>
-                <b>{moment(item.date).format('MMMM Do, YYYY')}</b>
+              return (<div key={item.id}>
+                <span className="date" style={dateStyle}><b>{moment(item.date).format('MMMM Do, YYYY')}</b></span>
                 <div className="shows" style={showsStyle}>
                   {item.shows.map((show)=>
                       <div key={show.id}>
                         <div className="show" style={showStyle}>
-                          <span className="venue" style={showItem}>{show.venue}</span>
-                          <span className="time" style={showItem}>{show.time}</span>
-                          <span className="price" style={showItem}>{show.price}</span>
+                          <span className="venue" style={showItemStyle}><b>{show.venue}</b></span>
+                          <span className="time" style={showItemStyle}>{show.time}</span>
+                          <span className="price" style={showItemStyle}>{show.price}</span>
                         </div>
                         <div className="bands">
                           {show.bands.map((band, i)=>
@@ -75,9 +77,9 @@ export default class ShowsList extends Component {
 
                   )}
                 </div>
-              </li>);
+              </div>);
           })}
-        </ul>
+        </div>
       );
   }
 }
