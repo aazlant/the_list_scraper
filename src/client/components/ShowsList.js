@@ -49,6 +49,7 @@ const showsStyle = {marginBottom: '1em'};
 const showStyle = {marginLeft: '1em', marginTop: '1em', marginBottom: '1em'};
 const showItemStyle = {marginRight: '2em', marginTop: '.5em'};
 const bandStyle = {marginLeft: '4em', fontStyle: 'italic'};
+require('font-awesome-webpack');
 
 export default class ShowsList extends Component {
   render() {
@@ -67,6 +68,9 @@ export default class ShowsList extends Component {
                           <span className="venue" style={showItemStyle}><b>{show.venue}</b></span>
                           <span className="time" style={showItemStyle}>{show.time}</span>
                           <span className="price" style={showItemStyle}>{show.price}</span>
+                          <i className="fa fa-bullseye"></i>
+                          <i className="fa fa-heartbeat"></i>
+                          <i className="fa fa-lock"></i>
                         </div>
                         <div className="bands">
                           {show.bands.map((band, i)=>
