@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const poststylus = require('poststylus');
 
 module.exports = {
     entry: [
@@ -22,7 +23,22 @@ module.exports = {
             loaders: ['babel'],
             exclude: /node_modules/,
         },
-        { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
-        { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }],
+        {
+            test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            loader: 'url-loader?limit=10000&mimetype=application/font-woff',
+        },
+        {
+            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            loader: 'file-loader',
+        },
+        {
+            test: /\.styl$/,
+            loader: 'style-loader!css-loader!stylus-loader',
+        }],
+    },
+    stylus: {
+        use: [
+            poststylus([ 'autoprefixer', 'rucksack-css' ]),
+        ],
     },
 };

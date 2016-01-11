@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ShowsList from './ShowsList';
+import styles from './ShowsList.styl';
 
 export default class ShowsPanel extends Component {
   render() {

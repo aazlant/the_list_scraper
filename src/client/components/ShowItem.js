@@ -1,8 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import BandItem from './BandItem';
 
-const showStyle = {marginLeft: '1em', marginTop: '1em', marginBottom: '1em'};
-const showHeaderItemStyle = {marginRight: '2em', marginTop: '.5em'};
+import styles from './ShowItem.styl';
 require('font-awesome-webpack');
 
 export default class ShowsList extends Component {
@@ -11,10 +10,10 @@ export default class ShowsList extends Component {
 
       return (
         <div key={show.id}>
-          <div className="show" style={showStyle}>
-            <span className="venue" style={showHeaderItemStyle}><b>{show.venue}</b></span>
-            <span className="time" style={showHeaderItemStyle}>{show.time}</span>
-            <span className="price" style={showHeaderItemStyle}>{show.price}</span>
+          <div className="show" style={styles.show}>
+            <span className="headerItem"><b>{show.venue}</b></span>
+            <span className="headerItem">{show.time}</span>
+            <span className="headerItem">{show.price}</span>
             <i className="fa fa-bullseye"></i>
             <i className="fa fa-heartbeat"></i>
             <i className="fa fa-lock"></i>

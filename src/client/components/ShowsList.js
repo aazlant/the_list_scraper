@@ -4,27 +4,20 @@ import moment from 'moment';
 
 const buildShowItemsByDate = (items)=> {
     const showsByDate = {};
-
     for (const item in items) {
         if (items.hasOwnProperty(item)) {
-            const { date } = items[item];
-            const showContent = Object.assign({}, items[item]);
-            delete showContent.date;
-
+            const {date, ...shows} = items[item];
             if (date in showsByDate) {
-                showsByDate[date].push(showContent);
+                showsByDate[date].push(shows);
             } else {
-                showsByDate[date] = [showContent];
+                showsByDate[date] = [shows];
             }
         }
     }
-
     return showsByDate;
 };
 
-const globalStyle = {fontSize: '12px', marginLeft: '2em', fontFamily: 'verdana'};
-const dateStyle = {fontSize: '14px'};
-const showsStyle = {marginBottom: '1em'};
+import styles from './ShowsList.styl';
 require('font-awesome-webpack');
 
 export default class ShowsList extends Component {
@@ -32,13 +25,12 @@ export default class ShowsList extends Component {
       const showsByDate = buildShowItemsByDate(this.props.items);
 
       return (
-        <div style={globalStyle}>
+        <div className="root" style={styles.root}>
           {Object.keys(showsByDate).map((date)=>{
-              // TODO: move to subcomponent
               const shows = showsByDate[date];
               return (<div key={date}>
-                <span className="date" style={dateStyle}><b>{moment(date).format('MMMM Do, YYYY')}</b></span>
-                <div className="shows" style={showsStyle}>
+                <span className="date"><b>{moment(date).format('MMMM Do, YYYY')}</b></span>
+                <div className="shows">
                   {shows.map((show)=>
                     <ShowItem show={show}/>
                   )}

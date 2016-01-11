@@ -1,13 +1,15 @@
 import React, { PropTypes, Component } from 'react';
+import styles from './BandItem.styl';
 
-const bandStyle = {marginLeft: '4em', fontStyle: 'italic'};
+// const bandStyle = {marginLeft: '4em', fontStyle: 'italic'};
 
 export default class BandItem extends Component {
   render() {
       const { band, index } = this.props;
 
+      console.log(styles);
       return (
-          <div className="band" style={bandStyle} key={index}>{band}</div>
+          <div className="band" key={index}>{band}</div>
       );
   }
 }
