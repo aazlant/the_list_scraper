@@ -5,16 +5,14 @@ import styles from './BandItem.styl';
 
 export default class BandItem extends Component {
   render() {
-      const { band, index } = this.props;
+      const { band } = this.props;
 
-      console.log(styles);
       return (
-          <div className="band" key={index}>{band}</div>
+          <div className={styles.band} >{band}</div>
       );
   }
 }
 
 BandItem.propTypes = {
     band: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
 };

@@ -9,16 +9,17 @@ import ShowsPanel from '../components/ShowsPanel';
 class App extends Component {
 
   render() {
-      const { shows, dispatch } = this.props;
+      const { shows, filter, dispatch } = this.props;
       const boundActions = bindActionCreators(actions, dispatch);
       return (
-        <ShowsPanel shows={shows} actions={boundActions}/>
+        <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
       );
   }
 }
 
 App.propTypes = {
     shows: PropTypes.object.isRequired,
+    filter: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
 };
 

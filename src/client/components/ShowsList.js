@@ -2,15 +2,16 @@ import React, { PropTypes, Component } from 'react';
 import ShowItem from './ShowItem';
 import moment from 'moment';
 
-const buildShowItemsByDate = (items)=> {
+const buildShowItemsByDate = (items, venuesFilter)=> {
     const showsByDate = {};
     for (const item in items) {
         if (items.hasOwnProperty(item)) {
-            const {date, ...shows} = items[item];
-            if (date in showsByDate) {
-                showsByDate[date].push(shows);
-            } else {
-                showsByDate[date] = [shows];
+            const {date, ...show} = items[item];
+
+            if (date in showsByDate && (venuesFilter.indexOf(show.venue) > -1 || venuesFilter.length === 0)) {
+                showsByDate[date].push(show);
+            } else if (venuesFilter.indexOf(show.venue) > -1 || venuesFilter.length === 0) {
+                showsByDate[date] = [show];
             }
         }
     }
@@ -22,17 +23,18 @@ require('font-awesome-webpack');
 
 export default class ShowsList extends Component {
   render() {
-      const showsByDate = buildShowItemsByDate(this.props.items);
+      const {venues} = this.props.filter;
+      const showsByDate = buildShowItemsByDate(this.props.items, venues);
 
       return (
-        <div className="root" style={styles.root}>
+        <div className={styles.root}>
           {Object.keys(showsByDate).map((date)=>{
               const shows = showsByDate[date];
               return (<div key={date}>
                 <span className="date"><b>{moment(date).format('MMMM Do, YYYY')}</b></span>
                 <div className="shows">
                   {shows.map((show)=>
-                    <ShowItem show={show}/>
+                    <ShowItem key={show.id} show={show}/>
                   )}
                 </div>
               </div>);
@@ -44,4 +46,5 @@ export default class ShowsList extends Component {
 
 ShowsList.propTypes = {
     items: PropTypes.array.isRequired,
+    filter: PropTypes.object.isRequired,
 };

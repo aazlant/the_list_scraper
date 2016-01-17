@@ -1,12 +1,18 @@
 import React, { PropTypes, Component } from 'react';
 import ShowsList from './ShowsList';
-import styles from './ShowsList.styl';
+import ShowsFilter from './ShowsFilter';
 
 export default class ShowsPanel extends Component {
   render() {
-      const { shows: {items, isFetching, lastUpdated} } = this.props;
+      const {
+        shows: {items, isFetching, lastUpdated},
+        filter,
+        actions: {setVenueFilter},
+      } = this.props;
+
       return (
         <div>
+          <ShowsFilter items={items} actions={{setVenueFilter}}/>
           <p>
             {lastUpdated &&
               <span>
@@ -23,7 +29,7 @@ export default class ShowsPanel extends Component {
           }
           {items.length > 0 &&
             <div>
-              <ShowsList items={items} />
+              <ShowsList items={items} filter={filter} />
             </div>
           }
         </div>
@@ -33,4 +39,6 @@ export default class ShowsPanel extends Component {
 
 ShowsPanel.propTypes = {
     shows: PropTypes.object.isRequired,
+    filter: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
 };

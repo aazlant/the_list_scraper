@@ -6,21 +6,21 @@ require('font-awesome-webpack');
 
 export default class ShowsList extends Component {
   render() {
-      const { show } = this.props;
+      const { show, key } = this.props;
 
       return (
-        <div key={show.id}>
-          <div className="show" style={styles.show}>
-            <span className="headerItem"><b>{show.venue}</b></span>
-            <span className="headerItem">{show.time}</span>
-            <span className="headerItem">{show.price}</span>
+        <div key={key}>
+          <div className={styles.bands}>
+            <span className={styles.headerItem}><b>{show.venue}</b></span>
+            <span className={styles.headerItem}>{show.time}</span>
+            <span className={styles.headerItem}>{show.price}</span>
             <i className="fa fa-bullseye"></i>
             <i className="fa fa-heartbeat"></i>
             <i className="fa fa-lock"></i>
           </div>
-          <div className="bands">
+          <div className={styles.bands}>
             {show.bands.map((band, i)=>
-              <BandItem band={band} index={i}/>
+              <BandItem band={band} key={i}/>
             )}
           </div>
         </div>
@@ -30,4 +30,5 @@ export default class ShowsList extends Component {
 
 ShowsList.propTypes = {
     show: PropTypes.object.isRequired,
+    key: PropTypes.object.isRequired,
 };
