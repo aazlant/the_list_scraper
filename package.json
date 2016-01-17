@@ -33,7 +33,6 @@
     "pg-promise": "^2.7.2",
     "poststylus": "^0.2.2",
     "react-select": "^0.9.1",
-    "react-super-select": "^0.2.3",
     "request": "^2.60.0",
     "rucksack-css": "^0.8.5",
     "stylus-loader": "^1.4.3",
