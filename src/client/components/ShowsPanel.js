@@ -12,7 +12,7 @@ export default class ShowsPanel extends Component {
 
       return (
         <div>
-          <ShowsFilter items={items} actions={{setVenueFilter}}/>
+          <ShowsFilter items={items} filter={filter} actions={{setVenueFilter}}/>
           <p>
             {lastUpdated &&
               <span>

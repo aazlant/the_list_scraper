@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
-import ReactSuperSelect from 'react-super-select';
-import 'react-super-select/lib/react-super-select.css';
+import ReactSelect from 'react-select';
+import 'react-select/dist/react-select.css';
 
 
 export default class Dropdown extends Component {
@@ -8,12 +8,14 @@ export default class Dropdown extends Component {
   render() {
       const { options, onChange, ...preferences } = this.props;
       return (
-        <ReactSuperSelect placeholder={preferences.placeholder}
-                  dataSource={options}
+        <ReactSelect placeholder={preferences.placeholder}
+                  options={options}
                   onChange={onChange}
+                  value={preferences.value}
+                  multi
                   searchable={preferences.searchable}
                   clearable={preferences.clearable}
-                  tags={preferences.tags} />
+                  />
       );
   }
 }

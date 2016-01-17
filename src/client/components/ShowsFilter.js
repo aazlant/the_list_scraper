@@ -14,8 +14,8 @@ const prepareItemsByGroup = (items)=> {
 
         if (venueNames.indexOf(venue) < 0) { // #TODO: do this with IDs
             venues.push({
-                id: venue,
-                name: venue,
+                label: venue,
+                value: venue,
                 group: 'venue',
             });
             venueNames.push(venue);
@@ -25,8 +25,8 @@ const prepareItemsByGroup = (items)=> {
             const band = bandList[i];
             if (bandNames.indexOf(band) < 0) { // #TODO: do this with IDs
                 bands.push({
-                    id: band,
-                    name: band,
+                    label: band,
+                    value: band,
                     group: 'artist',
                 });
                 bandNames.push(band);
@@ -44,7 +44,7 @@ const prepareItemsByGroup = (items)=> {
 export default class ShowsFilter extends Component {
 
   render() {
-      const { items, actions } = this.props;
+      const { items, actions, filter: {venues} } = this.props;
       const itemsByGroup = prepareItemsByGroup(items);
 
       return (
@@ -58,14 +58,17 @@ export default class ShowsFilter extends Component {
                   options={itemsByGroup.venues}
                   onChange={actions.setVenueFilter}
                   searchable
+                  value={venues}
                   clearable={false}
-                  tags />
+                  multi
+                  />
         </div>
       );
   }
 }
 
 ShowsFilter.propTypes = {
+    filter: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
 };

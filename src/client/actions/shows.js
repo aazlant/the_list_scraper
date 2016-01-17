@@ -57,10 +57,11 @@ export function fetchShowsIfNeeded() {
     };
 }
 
-export function setVenueFilter(venues) {
+export function setVenueFilter(lastChanged, venues) {
+    console.log(lastChanged, venues);
     const finalVenues = [];
     for (const venue in venues) {
-        finalVenues.push(venues[venue].name);
+        finalVenues.push(venues[venue].label);
     }
     return {
         type: SET_FILTER_BY_VENUE,
