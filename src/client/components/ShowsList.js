@@ -2,6 +2,9 @@ import React, { PropTypes, Component } from 'react';
 import ShowItem from './ShowItem';
 import moment from 'moment';
 
+import styles from './ShowsList.styl';
+require('font-awesome-webpack');
+
 const buildShowItemsByDate = (items, venuesFilter)=> {
     const showsByDate = {};
     for (const item in items) {
@@ -18,16 +21,13 @@ const buildShowItemsByDate = (items, venuesFilter)=> {
     return showsByDate;
 };
 
-import styles from './ShowsList.styl';
-require('font-awesome-webpack');
-
 export default class ShowsList extends Component {
   render() {
       const {venues} = this.props.filter;
       const showsByDate = buildShowItemsByDate(this.props.items, venues);
 
       return (
-        <div className={styles.root}>
+        <div>
           {Object.keys(showsByDate).map((date)=>{
               const shows = showsByDate[date];
               return (<div key={date}>

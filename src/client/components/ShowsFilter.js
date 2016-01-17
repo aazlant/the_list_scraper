@@ -12,7 +12,7 @@ const prepareItemsByGroup = (items)=> {
         const venue = item.venue;
         const bandList = item.bands;
 
-        if (venueNames.indexOf(venue) < 0) { // #TODO: do this with IDs
+        if (venueNames.indexOf(venue) < 0) {
             venues.push({
                 label: venue,
                 value: venue,
@@ -23,7 +23,7 @@ const prepareItemsByGroup = (items)=> {
 
         for (const i in bandList) {
             const band = bandList[i];
-            if (bandNames.indexOf(band) < 0) { // #TODO: do this with IDs
+            if (bandNames.indexOf(band) < 0) {
                 bands.push({
                     label: band,
                     value: band,
@@ -49,11 +49,14 @@ export default class ShowsFilter extends Component {
 
       return (
         <div>
-            {/* Dropdown placeholder="Select Bands"
+            <Dropdown placeholder="Select Bands"
                   options={itemsByGroup.bands}
-                  onChange={actions.setVenueFilter}
+                  onChange={()=>{}}
                   searchable
-                  multiple */}
+                  value={[]}
+                  clearable={false}
+                  multi
+                  />
             <Dropdown placeholder="Select Venues"
                   options={itemsByGroup.venues}
                   onChange={actions.setVenueFilter}

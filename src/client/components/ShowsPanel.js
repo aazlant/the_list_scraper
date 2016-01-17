@@ -1,6 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import ShowsList from './ShowsList';
 import ShowsFilter from './ShowsFilter';
+import styles from './ShowsPanel.styl';
+
 
 export default class ShowsPanel extends Component {
   render() {
@@ -11,7 +13,7 @@ export default class ShowsPanel extends Component {
       } = this.props;
 
       return (
-        <div>
+        <div className={styles.root}>
           <ShowsFilter items={items} filter={filter} actions={{setVenueFilter}}/>
           <p>
             {lastUpdated &&
