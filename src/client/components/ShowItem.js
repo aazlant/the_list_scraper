@@ -4,12 +4,11 @@ import BandItem from './BandItem';
 import styles from './ShowItem.styl';
 require('font-awesome-webpack');
 
-export default class ShowsList extends Component {
+export default class ShowItem extends Component {
   render() {
-      const { show, key } = this.props;
-
+      const { show } = this.props;
       return (
-        <div key={key}>
+        <div>
           <div className={styles.bands}>
             <span className={styles.headerItem}><b>{show.venue}</b></span>
             <span className={styles.headerItem}>{show.time}</span>
@@ -28,7 +27,6 @@ export default class ShowsList extends Component {
   }
 }
 
-ShowsList.propTypes = {
+ShowItem.propTypes = {
     show: PropTypes.object.isRequired,
-    key: PropTypes.object.isRequired,
 };

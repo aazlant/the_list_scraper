@@ -1,8 +1,23 @@
+// #TODO: make more functionally-oriented
+
 import React, { PropTypes, Component } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
+import { Filter } from '../models/filters/records';
+import { Item } from '../models/shows/records';
+
 import Dropdown from './Dropdown';
 import { sortBy } from 'lodash';
 
+import styles from './ShowsFilter.styl';
+
 const prepareItemsByGroup = (items)=> {
+    // receives: a list of Items (/src/client/models/shows/records.js)
+    //
+    // returns: a hash that maps
+    //      `bands` to an alphabtical list of band names
+    //      `venues` to an alphabetical list of venue names
+
     const venues = [];
     const venueNames = [];
     const bands = [];
@@ -35,7 +50,7 @@ const prepareItemsByGroup = (items)=> {
     }
 
     return {
-        bands: sortBy([...bands], (venue)=>{return venue.name;} ),
+        bands: sortBy([...bands], (band)=>{return band.name;} ),
         venues: sortBy([...venues], (venue)=>{return venue.name;} ),
     };
 };
@@ -44,34 +59,40 @@ const prepareItemsByGroup = (items)=> {
 export default class ShowsFilter extends Component {
 
   render() {
-      const { items, actions, filter: {venues} } = this.props;
+      const { actions, filter } = this.props;
+      const items = this.props.items.toArray();
+      const venuesFilter = filter.get('venues').toArray();
+      const bandsFilter = filter.get('bands').toArray();
       const itemsByGroup = prepareItemsByGroup(items);
 
       return (
-        <div>
+        <div className={styles.root}>
+
             <Dropdown placeholder="Select Bands"
                   options={itemsByGroup.bands}
-                  onChange={()=>{}}
+                  onChange={actions.setBandFilter}
                   searchable
-                  value={[]}
+                  value={bandsFilter}
                   clearable={false}
                   multi
                   />
+
             <Dropdown placeholder="Select Venues"
                   options={itemsByGroup.venues}
                   onChange={actions.setVenueFilter}
                   searchable
-                  value={venues}
+                  value={venuesFilter}
                   clearable={false}
                   multi
                   />
+
         </div>
       );
   }
 }
 
 ShowsFilter.propTypes = {
-    filter: PropTypes.object.isRequired,
-    items: PropTypes.array.isRequired,
+    filter: ImmutablePropTypes.recordOf(Filter).isRequired,
+    items: ImmutablePropTypes.listOf(ImmutablePropTypes.recordOf(Item)).isRequired, // how do we deal with pre-fetch?
     actions: PropTypes.object.isRequired,
 };
