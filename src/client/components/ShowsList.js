@@ -31,9 +31,10 @@ const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
     };
 
     const showsByDate = {};
-    for (const item in items) {
-        if (items.hasOwnProperty(item)) {
-            const {date, ...show} = items[item];
+    for (const i in items) {
+        if (items.hasOwnProperty(i)) {
+            const item = items[i].toObject();
+            const {date, ...show} = item;
 
             if (date in showsByDate
                   && (venuesFilter.includes(show.venue) || venuesFilter.size === 0)

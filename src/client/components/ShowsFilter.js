@@ -23,7 +23,7 @@ const prepareItemsByGroup = (items)=> {
     const bands = [];
     const bandNames = [];
     for (const index in items) {
-        const item = items[index];
+        const item = items[index].toObject();
         const venue = item.venue;
         const bandList = item.bands;
 
@@ -64,7 +64,6 @@ export default class ShowsFilter extends Component {
       const venuesFilter = filter.get('venues').toArray();
       const bandsFilter = filter.get('bands').toArray();
       const itemsByGroup = prepareItemsByGroup(items);
-
       return (
         <div className={styles.root}>
 

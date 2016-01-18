@@ -1,6 +1,6 @@
 import {Record, List, Map, Set, OrderedMap} from 'immutable';
 import {Filter} from '../models/filters/records';
-import {Shows} from '../models/shows/records';
+import {Shows, Item} from '../models/shows/records';
 
 import { combineReducers } from 'redux';
 import {
@@ -55,10 +55,11 @@ const shows = (state = initialShowsState, action)=> {
                 .set('didInvalidate', false);
 
     case RECEIVE_SHOWS:
+        const items = action.items.map(item => new Item(item));
         return state
                 .set('isFetching', false)
                 .set('didInvalidate', false)
-                .set('items', new List(action.items))
+                .set('items', new List(items))
                 .set('lastUpdated', action.receivedAt);
     default:
         return state;
