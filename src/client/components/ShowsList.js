@@ -33,8 +33,7 @@ const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
     const showsByDate = {};
     for (const i in items) {
         if (items.hasOwnProperty(i)) {
-            const item = items[i].toObject();
-            const {date, ...show} = item;
+            const {date, ...show} = items[i].toObject(); // #QUESTION: Getters and setters?
 
             if (date in showsByDate
                   && (venuesFilter.includes(show.venue) || venuesFilter.size === 0)
@@ -43,7 +42,7 @@ const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
                 showsByDate[date].push(show);
             } else if (
               (venuesFilter.includes(show.venue) || venuesFilter.size === 0)
-              && (containsAny(bandsFilter, show.bands) || bandsFilter.size === 0)
+                  && (containsAny(bandsFilter, show.bands) || bandsFilter.size === 0)
               ) {
                 showsByDate[date] = [show];
             }

@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import ShowsPanel from '../components/ShowsPanel';
 
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Filter } from '../models/filters/records';
+import { Show } from '../models/shows/records';
+
 class App extends Component {
 
   render() {
@@ -18,8 +22,8 @@ class App extends Component {
 }
 
 App.propTypes = {
-    shows: PropTypes.object.isRequired,
-    filter: PropTypes.object.isRequired,
+    shows: ImmutablePropTypes.recordOf(Show).isRequired,
+    filter: ImmutablePropTypes.recordOf(Filter).isRequired,
     dispatch: PropTypes.func.isRequired,
 };
 
