@@ -50,8 +50,8 @@ const prepareItemsByGroup = (items)=> {
     }
 
     return {
-        bands: sortBy([...bands], (band)=>{return band.name;} ),
-        venues: sortBy([...venues], (venue)=>{return venue.name;} ),
+        bands: sortBy([...bands], (band)=>{return band.value;} ),
+        venues: sortBy([...venues], (venue)=>{return venue.value;} ),
     };
 };
 

@@ -6,12 +6,7 @@ import {
   SET_FILTER_BY_BAND, CLEAR_FILTER_BY_BAND,
 } from '../actions';
 
-
-// Initial States
-
 const initialFilterState = new Filter();
-
-// Reducers
 
 export default (state = initialFilterState, action )=> {
     switch (action.type) {
