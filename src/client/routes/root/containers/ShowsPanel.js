@@ -3,8 +3,8 @@ import ShowsList from './ShowsList';
 import ShowsFilter from './ShowsFilter';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Filter } from '../modules/shows/records/filters';
-import { Show } from '../modules/shows/records/shows';
+import { Filter } from '../../../modules/shows/records/filters';
+import { Show } from '../../../modules/shows/records/shows';
 
 import styles from './ShowsPanel.styl';
 

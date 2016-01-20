@@ -5,7 +5,7 @@ const poststylus = require('poststylus');
 module.exports = {
     entry: [
         'webpack-hot-middleware/client',
-        './src/client/index',
+        './src/client/routes/root',
     ],
     output: {
         path: path.join(__dirname, 'dist'),

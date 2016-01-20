@@ -3,10 +3,10 @@
 import React, { PropTypes, Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
-import { Filter } from '../modules/shows/records/filters';
-import { Item } from '../modules/shows/records/shows';
+import { Filter } from '../../../modules/shows/records/filters';
+import { Item } from '../../../modules/shows/records/shows';
 
-import Dropdown from './Dropdown';
+import Dropdown from '../components/Dropdown';
 import { sortBy } from 'lodash';
 
 import styles from './ShowsFilter.styl';

@@ -1,14 +1,12 @@
-// #TODO: refactor with immutablejs
-
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from '../modules/actions';
-import ShowsPanel from '../components/ShowsPanel';
+import * as actions from '../../../modules/actions';
+import ShowsPanel from './ShowsPanel';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Filter } from '../modules/shows/records/filters';
-import { Show } from '../modules/shows/records/shows';
+import { Filter } from '../../../modules/shows/records/filters';
+import { Show } from '../../../modules/shows/records/shows';
 
 class App extends Component {
 

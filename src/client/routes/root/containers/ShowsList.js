@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Filter } from '../modules/shows/records/filters';
-import { Item } from '../modules/shows/records/shows';
+import { Filter } from '../../../modules/shows/records/filters';
+import { Item } from '../../../modules/shows/records/shows';
 
-import ShowItem from './ShowItem';
+import ShowItem from '../components/ShowItem';
 
 import moment from 'moment';
 
