@@ -1,5 +1,5 @@
 import {Record, List, Map, Set, OrderedMap} from 'immutable';
-import {Filter} from '../modules/shows/records/filters';
+import {Filter} from '../records/filters';
 
 import {
   SET_FILTER_BY_VENUE, CLEAR_FILTER_BY_VENUE,
@@ -36,4 +36,3 @@ export default (state = initialFilterState, action )=> {
         return state;
     }
 };
-

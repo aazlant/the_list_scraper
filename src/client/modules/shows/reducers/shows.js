@@ -1,5 +1,5 @@
 import {Record, List, Map, Set, OrderedMap} from 'immutable';
-import {Shows, Item} from '../modules/shows/records/shows';
+import {Shows, Item} from '../records/shows';
 
 import {
   INVALIDATE_SHOWS,

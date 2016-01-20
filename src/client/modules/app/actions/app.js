@@ -1,4 +1,4 @@
-import * as shows from './shows';
+import * as shows from '../../shows/actions';
 
 export const APP_INITIALIZE = 'APP_INITIALIZE';
 
