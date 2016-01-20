@@ -1,3 +1,5 @@
+// NOTE: As the app picks up additional routes, this needs to be refactored.
+
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

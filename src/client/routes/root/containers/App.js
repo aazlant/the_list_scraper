@@ -2,7 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../../modules/actions';
+
 import ShowsPanel from './ShowsPanel';
+import Calendar from '../components/Calendar';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Filter } from '../../../modules/shows/records/filters';
@@ -17,7 +19,12 @@ class App extends Component {
       const boundActions = bindActionCreators(actions, dispatch);
       return (
         <div className={styles.appRoot}>
-          <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
+          <div className={styles.calendar}>
+            <Calendar />
+          </div>
+          <div className={styles.showsPanel}>
+            <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
+          </div>
         </div>
       );
   }
