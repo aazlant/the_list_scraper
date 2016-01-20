@@ -8,13 +8,17 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Filter } from '../../../modules/shows/records/filters';
 import { Show } from '../../../modules/shows/records/shows';
 
+import styles from './App.styl';
+
 class App extends Component {
 
   render() {
       const { shows, filter, dispatch } = this.props;
       const boundActions = bindActionCreators(actions, dispatch);
       return (
-        <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
+        <div className={styles.appRoot}>
+          <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
+        </div>
       );
   }
 }
