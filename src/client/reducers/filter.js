@@ -1,5 +1,5 @@
 import {Record, List, Map, Set, OrderedMap} from 'immutable';
-import {Filter} from '../models/filters/records';
+import {Filter} from '../modules/records/filters';
 
 import {
   SET_FILTER_BY_VENUE, CLEAR_FILTER_BY_VENUE,

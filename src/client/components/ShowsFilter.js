@@ -3,8 +3,8 @@
 import React, { PropTypes, Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
-import { Filter } from '../models/filters/records';
-import { Item } from '../models/shows/records';
+import { Filter } from '../modules/records/filters';
+import { Item } from '../modules/records/shows';
 
 import Dropdown from './Dropdown';
 import { sortBy } from 'lodash';
@@ -12,7 +12,7 @@ import { sortBy } from 'lodash';
 import styles from './ShowsFilter.styl';
 
 const prepareItemsByGroup = (items)=> {
-    // receives: a list of Items (/src/client/models/shows/records.js)
+    // receives: a list of Items (/src/client/modules/records/shows.js)
     //
     // returns: a hash that maps
     //      `bands` to an alphabtical list of band names
