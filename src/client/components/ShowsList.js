@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Filter } from '../modules/records/filters';
-import { Item } from '../modules/records/shows';
+import { Filter } from '../modules/shows/records/filters';
+import { Item } from '../modules/shows/records/shows';
 
 import ShowItem from './ShowItem';
 
@@ -13,7 +13,7 @@ require('font-awesome-webpack');
 
 const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
     // receives:
-    //      a list of Items (/src/client/modules/records/shows.js)
+    //      a list of Items (/src/client/modules/shows/records/shows.js)
     //      a list of strings (venuesFilter) to filter the items' venues against.
     //      a list of strings (bandsFilter) to filter the items' bands lists against.
     //

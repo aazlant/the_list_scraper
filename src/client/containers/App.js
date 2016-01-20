@@ -7,8 +7,8 @@ import * as actions from '../actions';
 import ShowsPanel from '../components/ShowsPanel';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Filter } from '../modules/records/filters';
-import { Show } from '../modules/records/shows';
+import { Filter } from '../modules/shows/records/filters';
+import { Show } from '../modules/shows/records/shows';
 
 class App extends Component {
 
