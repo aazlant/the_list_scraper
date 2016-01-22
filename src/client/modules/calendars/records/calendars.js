@@ -1,8 +1,9 @@
 import {Record, List, Map, Set, OrderedMap} from 'immutable';
 
 const Event = new Record({
-    'date': null,
-    'show': null,
+    'start': null,
+    'end': null,
+    'title': null,
 });
 
 const Calendar = new Record({

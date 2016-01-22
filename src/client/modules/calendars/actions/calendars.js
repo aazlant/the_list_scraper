@@ -11,7 +11,7 @@ export function addEventToCurrentCalendar(event) {
 
 export function removeEventFromCurrentCalendar(event) {
     return {
-        type: ADD_EVENT_TO_CURRENT_CALENDAR,
+        type: REMOVE_EVENT_FROM_CURRENT_CALENDAR,
         event: event,
     };
 }
