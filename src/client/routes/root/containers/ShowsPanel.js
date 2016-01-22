@@ -10,7 +10,7 @@ import styles from './ShowsPanel.styl';
 
 export default class ShowsPanel extends Component {
   render() {
-      const { shows, filter, actions: {setVenueFilter, setBandFilter}} = this.props;
+      const { shows, filter, actions: {setVenueFilter, setBandFilter, addEventToCurrentCalendar }} = this.props;
       const items = shows.get('items');
       const isFetching = shows.get('isFetching');
       return (
@@ -24,7 +24,7 @@ export default class ShowsPanel extends Component {
           }
           {items.size > 0 &&
             <div>
-              <ShowsList items={items} filter={filter} />
+              <ShowsList items={items} filter={filter} actions={{addEventToCurrentCalendar}}/>
             </div>
           }
         </div>

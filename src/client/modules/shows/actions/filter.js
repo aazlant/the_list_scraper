@@ -1,3 +1,5 @@
+// #TODO: make more functional
+
 export const SET_FILTER_BY_VENUE = 'ADD_FILTER_BY_VENUE';
 export const CLEAR_FILTER_BY_VENUE = 'CLEAR_FILTER_BY_VENUE';
 export const SET_FILTER_BY_BAND = 'ADD_FILTER_BY_BAND';

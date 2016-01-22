@@ -53,7 +53,8 @@ const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
 
 export default class ShowsList extends Component {
   render() {
-      const {filter} = this.props;
+      const {filter, actions} = this.props;
+
       const items = this.props.items.toArray();
 
       const venuesFilter = filter.get('venues');
@@ -71,7 +72,7 @@ export default class ShowsList extends Component {
 
                 <div className="shows">
                   {shows.map((show)=>
-                        <ShowItem key={show.id} show={show}/>
+                        <ShowItem key={show.id} show={show} date={date} actions={actions}/>
                   )}
                 </div>
 
