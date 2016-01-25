@@ -7,8 +7,6 @@ class Downloader {
     }
 
     downloadHTML(url) {
-        
-
         return new Promise(
 
             (resolve, reject) => {

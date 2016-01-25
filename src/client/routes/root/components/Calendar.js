@@ -3,15 +3,7 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-// const events = [
-//     {
-//         'title': 'Sample Show',
-//         'allDay': true,
-//         'start': new Date(2016, 0, 1),
-//         'end': new Date(2016, 0, 1),
-//     },
-// ];
+import styles from './Calendar.styl';
 
 BigCalendar.setLocalizer(
   BigCalendar.momentLocalizer(moment)
@@ -23,6 +15,7 @@ export default class Calendar extends Component {
     const { events, actions, ...preferences } = this.props;
       return (
         <BigCalendar
+            className={styles.calendar}
             selectable={preferences.selectable}
             defaultDate={new Date()}
             events={events}
