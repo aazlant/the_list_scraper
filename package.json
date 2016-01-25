@@ -32,6 +32,8 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "pg-promise": "^2.7.2",
     "poststylus": "^0.2.2",
     "react-big-calendar": "^0.9.8",

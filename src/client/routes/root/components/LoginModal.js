@@ -15,12 +15,29 @@ export default class Header extends Component {
               className={styles.modal}
               show={modalState}
               onHide={toggleLoginModal}
+              bsSize="large"
             >
               <Modal.Header>
                 <h1>Login / Register</h1>
               </Modal.Header>
               <Modal.Body>
-                <Button><i bsStyle="primary" className="fa fa-google"/>  Login with Google</Button>
+                <div className={styles.loginButton}>
+                  <Button bsStyle="info" bsSize="large">
+                    Login / Register
+                  </Button>
+                </div>
+                <div className={styles.loginButton}>
+                  <Button bsStyle="danger" bsSize="large">
+                    <i className="fa fa-google"/>
+                    <span className={styles.buttonTextWithIcon}>Login with Google</span>
+                  </Button>
+                </div>
+                <div className={styles.loginButton}>
+                  <Button bsStyle="primary" bsSize="large">
+                    <i className="fa fa-facebook"/>
+                    <span className={styles.buttonTextWithIcon}>Login with Facebook</span>
+                  </Button>
+                </div>
               </Modal.Body>
 
             </Modal>

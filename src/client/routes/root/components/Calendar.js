@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import BigCalendar from 'react-big-calendar';
+import CustomEventComponent from './CustomEventComponent';
 import moment from 'moment';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -8,6 +9,12 @@ import styles from './Calendar.styl';
 BigCalendar.setLocalizer(
   BigCalendar.momentLocalizer(moment)
 );
+
+const customComponent = {
+    month: {
+        event: CustomEventComponent,
+    },
+};
 
 export default class Calendar extends Component {
 
@@ -21,6 +28,7 @@ export default class Calendar extends Component {
             events={events}
             views={preferences.views}
             onSelectSlot={preferences.onSelectSlot}
+            components={customComponent}
         />
       );
   }

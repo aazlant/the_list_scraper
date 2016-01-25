@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import { Button } from 'react-bootstrap';
 import BandItem from './BandItem';
 
 import styles from './ShowItem.styl';
-require('font-awesome-webpack');
 
 export default class ShowItem extends Component {
 
@@ -12,7 +12,7 @@ export default class ShowItem extends Component {
       return (
         <div>
           <div className={styles.bands}>
-            <button className={styles.plusSign} onClick={()=> {actions.addEventToCurrentCalendar({show: show, date: date});}}><i className="fa fa-calendar-plus-o"/></button>
+            <Button className={styles.plusSign} bsStyle="link" onClick={()=> {actions.addEventToCurrentCalendar({show: show, date: date});}}><i className="fa fa-calendar-plus-o"/></Button>
             <span className={styles.headerItem}><b>{show.venue}</b></span>
             <span className={styles.headerItem}>{show.time}</span>
             <span className={styles.headerItem}>{show.price}</span>
