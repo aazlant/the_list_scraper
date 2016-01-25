@@ -16,7 +16,6 @@ export default class ShowItem extends Component {
             <span className={styles.headerItem}><b>{show.venue}</b></span>
             <span className={styles.headerItem}>{show.time}</span>
             <span className={styles.headerItem}>{show.price}</span>
-            <i className="fa fa-bullseye"></i>
           </div>
           <div className={styles.bands}>
             {show.bands.map((band, i)=>

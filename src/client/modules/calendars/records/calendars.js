@@ -7,7 +7,7 @@ const Event = new Record({
 });
 
 const Calendar = new Record({
-    'events': new List(), // list of Events
+    'events': new Set(), // set of Events
 });
 
 export default {

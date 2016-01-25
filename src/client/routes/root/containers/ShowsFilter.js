@@ -92,6 +92,6 @@ export default class ShowsFilter extends Component {
 
 ShowsFilter.propTypes = {
     filter: ImmutablePropTypes.recordOf(Filter).isRequired,
-    items: ImmutablePropTypes.listOf(ImmutablePropTypes.recordOf(Item)).isRequired, // how do we deal with pre-fetch?
+    items: ImmutablePropTypes.listOf(ImmutablePropTypes.recordOf(Item)).isRequired,
     actions: PropTypes.object.isRequired,
 };

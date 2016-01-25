@@ -24,3 +24,7 @@ export default class CalendarPanel extends Component {
       );
   }
 }
+
+CalendarPanel.propTypes = {
+    events: ImmutablePropTypes.setOf(Event).isRequired,
+};

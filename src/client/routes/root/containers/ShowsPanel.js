@@ -17,7 +17,7 @@ export default class ShowsPanel extends Component {
         <div className={styles.root}>
           <ShowsFilter items={items} filter={filter} actions={{setVenueFilter, setBandFilter}}/>
           {isFetching && items.size === 0 &&
-            <h2>Loading...</h2>
+            <h4>Loading Shows...</h4>
           }
           {!isFetching && items.size === 0 &&
             <h2>Empty.</h2>
