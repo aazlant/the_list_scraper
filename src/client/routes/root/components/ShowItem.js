@@ -10,8 +10,8 @@ export default class ShowItem extends Component {
       const { show, date, actions } = this.props;
 
       return (
-        <div>
-          <div className={styles.bands}>
+        <div className={styles.root}>
+          <div className={styles.header}>
             <Button className={styles.plusSign} bsStyle="link" onClick={()=> {actions.addEventToCurrentCalendar({show: show, date: date});}}><i className="fa fa-calendar-plus-o"/></Button>
             <span className={styles.headerItem}><b>{show.venue}</b></span>
             <span className={styles.headerItem}>{show.time}</span>

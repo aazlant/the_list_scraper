@@ -68,9 +68,9 @@ export default class ShowsList extends Component {
               return (
                 <div key={date}>
 
-                <span className="date"><b>{moment(date).format('MMMM Do, YYYY')}</b></span>
+                <div className={styles.date}><b>{moment(date).format('MMMM Do, YYYY')}</b></div>
 
-                <div className="shows">
+                <div className={styles.shows}>
                   {shows.map((show)=>
                         <ShowItem key={show.id} show={show} date={date} actions={actions}/>
                   )}
