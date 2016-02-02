@@ -6,7 +6,7 @@ export default class BandItem extends Component {
       const { band } = this.props;
 
       return (
-          <div className={styles.band} >{band}</div>
+          <div className={styles.band} ><i className="fa fa-spotify"/>{band}</div>
       );
   }
 }

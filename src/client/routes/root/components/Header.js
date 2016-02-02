@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
-import LoginModal from './LoginModal';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Application } from '../../../modules/application/records/application';
@@ -9,7 +8,7 @@ import styles from './Header.styl';
 
 export default class Header extends Component {
   render() {
-      const { actions: {toggleLoginModal} , application } = this.props;
+      const { actions: {toggleLoginModal}, application } = this.props;
 
       return (
           <div>

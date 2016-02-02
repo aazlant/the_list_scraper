@@ -12,14 +12,18 @@ export default (state = initialCalendarState, action )=> {
 
     case ADD_EVENT_TO_CURRENT_CALENDAR:
         return state.updateIn(['events'], (events)=> events.add(new Event({
+            id: (events.size + 1), // Question: I think this is ugly - ordered set?
             start: action.event.date,
             end: action.event.date,
             title: `${action.event.show.venue}`,
+            show: action.event.show,
+            boundActions: action.boundActions,
         })));
 
     case REMOVE_EVENT_FROM_CURRENT_CALENDAR:
-        return state
-                .set('events', new List());
+        return state.updateIn(['events'], (events)=> events.filter(
+            (event)=> (event.id !== action.event.id)
+        ));
 
     default:
         return state;

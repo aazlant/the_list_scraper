@@ -12,7 +12,15 @@ export default class ShowItem extends Component {
       return (
         <div className={styles.root}>
           <div className={styles.header}>
-            <Button className={styles.plusSign} bsStyle="link" onClick={()=> {actions.addEventToCurrentCalendar({show: show, date: date});}}><i className="fa fa-calendar-plus-o"/></Button>
+            <Button className={styles.plusSign} bsStyle="link" onClick={()=> {
+                actions.addEventToCurrentCalendar({
+                    show: show,
+                    date: date,
+                },
+                actions
+                );
+            }}>
+            <i className="fa fa-calendar-plus-o"/></Button>
             <span className={styles.headerItem}><b>{show.venue}</b></span>
             <span className={styles.headerItem}>{show.time}</span>
             <span className={styles.headerItem}>{show.price}</span>
