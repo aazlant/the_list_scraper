@@ -6,14 +6,17 @@ export default class CustomEventComponent extends Component {
 
   render() {
       const { event, title } = this.props;
-      const {removeEventFromCurrentCalendar} = event.boundActions;
+      const {removeEventFromCurrentCalendar, toggleEventModal} = event.boundActions;
       return (
         <div className={styles.root}>
           <span
             className={styles.delete}
             onClick={()=>{removeEventFromCurrentCalendar(event);}}
           >×</span>
-          <span className={styles.title}>{title}</span>
+          <span
+            className={styles.title}
+            onClick={()=>{toggleEventModal(event);}}
+          >{title}</span>
         </div>
       );
   }

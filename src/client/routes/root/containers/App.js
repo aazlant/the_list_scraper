@@ -7,6 +7,7 @@ import ShowsPanel from './ShowsPanel';
 import CalendarPanel from './CalendarPanel';
 import Header from '../components/Header';
 import LoginModal from '../components/LoginModal';
+import EventModal from '../components/EventModal';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Application } from '../../../modules/application/records/application';
@@ -33,6 +34,10 @@ class App extends Component {
           <LoginModal
                 application={application}
                 actions={boundActions}
+          />
+          <EventModal
+                  application={application}
+                  actions={boundActions}
           />
 
           <div className={styles.calendarPanel}>

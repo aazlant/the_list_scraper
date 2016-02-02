@@ -5,7 +5,7 @@ import { Application } from '../../../modules/application/records/application';
 import { Modal, Button } from 'react-bootstrap';
 import styles from './LoginModal.styl';
 
-export default class Header extends Component {
+export default class LoginModal extends Component {
   render() {
       const { actions: { toggleLoginModal }, application } = this.props;
       const modalState = application.toJS().loginModalOpen;
@@ -45,7 +45,7 @@ export default class Header extends Component {
   }
 }
 
-Header.propTypes = {
+LoginModal.propTypes = {
     actions: PropTypes.object.isRequired,
     application: ImmutablePropTypes.recordOf(Application).isRequired,
 };

@@ -8,7 +8,6 @@ export default class ShowItem extends Component {
 
   render() {
       const { show, date, actions } = this.props;
-
       return (
         <div className={styles.root}>
           <div className={styles.header}>

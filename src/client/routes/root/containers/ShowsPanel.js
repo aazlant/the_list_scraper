@@ -18,6 +18,7 @@ export default class ShowsPanel extends Component {
           setBandFilter,
           addEventToCurrentCalendar,
           removeEventFromCurrentCalendar,
+          toggleEventModal,
         },
       } = this.props;
       const items = shows.get('items');
@@ -36,6 +37,7 @@ export default class ShowsPanel extends Component {
               <ShowsList items={items} filter={filter} actions={{
                   addEventToCurrentCalendar,
                   removeEventFromCurrentCalendar,
+                  toggleEventModal,
               }}/>
             </div>
           }
