@@ -44,7 +44,7 @@
 
 6) **Launch app server**:
 
-    npm run app
+    npm run dev
 
 App should then be available at `{APPSERVER_HOST}:{APPSERVER_POST}`.
 
