@@ -10,7 +10,8 @@
     "dev": "node -r dotenv/config src/server/app/server --hot",
     "api": "node -r dotenv/config src/server/api/server --hot",
     "lint": "eslint -c .eslintrc index.js ./src/*.js",
-    "db:create:postgres": "node -r dotenv/config ./db/postgres_up.js"
+    "db:create:postgres": "node -r dotenv/config ./db/postgres_up.js",
+    "db:delete:postgres": "node -r dotenv/config ./db/postgres_down.js"
   },
   "author": "",
   "license": "ISC",
@@ -37,6 +38,7 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg-promise": "^2.7.2",
+    "pgtools": "0.0.2",
     "poststylus": "^0.2.2",
     "react-big-calendar": "^0.9.8",
     "react-bootstrap": "^0.28.2",

@@ -11,9 +11,6 @@
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA public;
-
-
 --
 -- TOC entry 2345 (class 0 OID 0)
 -- Dependencies: 5
