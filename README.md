@@ -1,6 +1,6 @@
 # Bay Area Concert Calendar Application
 
-### Setup
+## Initial Setup
 
 1) **Add the following items to `.env` at project root**:
 
@@ -32,15 +32,19 @@
 
 3) **Scrape site and save data to local 'claim' directory**:
 
-  (A 'claim' represents an attempt to download, scrape, parse, and save to disk data from a website, with directories per-step, as well a saved metadata and logging.)
+  A 'claim' represents an attempt to download, scrape, parse, and save to disk data from a website, with directories per-step, as well a saved metadata and logging.
 
     npm run scraper -- -r {claim directory, i.e. ~/tmp}
+
+  The `{claim directory}` is an arbitary path that the scraper will store claim directories in.
+
+  For the structure of a claim directory, see below.
 
 4) **Copy data from claim directory into postgres**:
 
     npm run import -- -r {root directory} -c {claim name}
 
-  (claim name is saved in claim directory under `{claim directory}/{claim name}/metadata/claimName.txt`)
+  A claim name is saved in a given claim directory under `{claim directory, i.e. ~/tmp}/{claim name}/metadata/claimName.txt`.
 
 5) **Launch API server**:
 
@@ -52,9 +56,11 @@
 
 App should then be available at `{APPSERVER_HOST}:{APPSERVER_POST}`.
 
+## Components of repo
+
 ### CLI Tools
 
-#### 1) Scraper
+#### 1) Scraper script
 
 Scrapes https://www.uncorp.net/list/index.html and parses the results, producing a claim that contains a json file for import into a database.
 
@@ -71,7 +77,7 @@ Produces a claim directory in root with
        |-raw_shows\raw_shows.json
        \-tmp\
 
-#### 2) Import
+#### 2) Import script
 
 Copies the parsed shows from a claim into a postgres DB instance
 
@@ -80,6 +86,8 @@ Copies the parsed shows from a claim into a postgres DB instance
 *Usage:* `npm run import -- -r {root directory} -c {claim name}`
 
 See expected `.env` section above for environment variables expected by this script.
+
+See `/db/postgres_schema.sql` for db schema.
 
 ### API server
 
