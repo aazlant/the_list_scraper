@@ -1,4 +1,4 @@
-# the_list_scraper
+# Bay Area Concert Calendar Application
 
 ### Command-line tools
 
@@ -31,3 +31,6 @@ Assumes three tables in the db: `artist`, `shows`, and `shows_artist`
 
 *Usage:* `npm run import -- -r {root directory} -c {claim name}`
 
+### API server
+
+### Redux application

@@ -9,12 +9,14 @@
     "import": "babel-node ./scripts/import_claim_into_postgres.js",
     "dev": "node -r dotenv/config src/server/app/server --hot",
     "api": "node -r dotenv/config src/server/api/server --hot",
-    "lint": "eslint -c .eslintrc index.js ./src/*.js"
+    "lint": "eslint -c .eslintrc index.js ./src/*.js",
+    "db:create:postgres": "node -r dotenv/config ./db/postgres_up.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "autoprefixer": "^6.2.3",
+    "bell": "^6.1.0",
     "bootstrap": "^3.3.6",
     "cheerio": "^0.19.0",
     "classnames": "^2.2.3",

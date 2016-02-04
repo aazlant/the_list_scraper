@@ -17,7 +17,7 @@ const logger = new WinstonLogger({
 
 const dbParsedDataRepository = new DBParsedDataRepository(logger, db);
 
-const showsRoute = {
+export const showsRoute = {
     method: 'GET',
     path: '/shows',
     config: {
@@ -35,7 +35,25 @@ const showsRoute = {
     },
 };
 
+export const googleAuthRoute = {
+    method: ['GET', 'POST'], // Must handle both GET and POST
+    path: '/auth/google/callback', // The callback endpoint registered with the provider
+    config: {
+        auth: 'google',
+        handler: (request, reply)=> {
+            if (!request.auth.isAuthenticated) {
+                return reply('Authentication failed due to: ' + request.auth.error.message);
+            }
 
-module.exports = [
+            // Perform any account lookup or registration, setup local session,
+            // and redirect to the application. The third-party credentials are
+            // stored in request.auth.credentials. Any query parameters from
+            // the initial request are passed back via request.auth.credentials.query.
+            return reply.redirect(`${config.appHost}:${config.appPort}/`);
+        },
+    },
+};
+
+export default [
     showsRoute,
 ];
