@@ -20,15 +20,19 @@
     GOOGLE_CLIENT_ID={Google oAuth client ID}
     GOOGLE_SECRET={Google oAuth secret key}
 
-2) **Set up postgres database with correct schema**:
+2) **Set up (postgres) database with correct schema**:
+
+  This script expects you to have a running postgres db in place.
 
     npm run db:create:postgres
 
-  (if db is already created, you can delete it with the following script)
+  (if a db instance has already been created, you can delete it with the following script)
 
     npm run db:delete:postgres
 
-3) **Scrape site and save data to local claim directory**:
+3) **Scrape site and save data to local 'claim' directory**:
+
+  (A 'claim' represents an attempt to download, scrape, parse, and save to disk data from a website, with directories per-step, as well a saved metadata and logging.)
 
     npm run scraper -- -r {claim directory, i.e. ~/tmp}
 
@@ -70,6 +74,8 @@ Produces a claim directory in root with
 (claim name is saved in claim directory under `{claim directory}/{claim name}/metadata/claimName.txt`)
 
 *Usage:* `npm run import -- -r {root directory} -c {claim name}`
+
+See expected `.env` section above for environment variables expected by this script.
 
 ### API server
 
