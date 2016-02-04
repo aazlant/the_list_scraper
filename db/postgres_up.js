@@ -1,9 +1,8 @@
 'use strict';
 
-const fs = require('fs');
 const pg = require('pg-promise');
 const pgtools = require('pgtools');
-const sql = fs.readFileSync('./db/postgres_schema.sql').toString();
+const sql = pg.QueryFile('./db/postgres_schema.sql', {minify: true});
 const dotenv = require('dotenv');
 
 dotenv.load();
