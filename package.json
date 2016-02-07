@@ -19,7 +19,7 @@
     "autoprefixer": "^6.2.3",
     "bell": "^6.1.0",
     "bootstrap": "^3.3.6",
-    "cheerio": "^0.19.0",
+    "cheerio": "^0.20.0",
     "classnames": "^2.2.3",
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
@@ -50,6 +50,7 @@
     "winston": "^2.1.0"
   },
   "devDependencies": {
+    "babel": "^6.3.26",
     "babel-cli": "^6.3.17",
     "babel-core": "^6.3.17",
     "babel-eslint": "^5.0.0-beta6",
