@@ -27,9 +27,9 @@ export default class LoginModal extends Component {
                   </Button>
                 </div>
                 <div className={styles.loginButton}>
-                  <Button bsStyle="danger" bsSize="large">
+                  <Button bsStyle="danger" bsSize="large" href="/api/auth/google">
                     <i className="fa fa-google"/>
-                    <a className={styles.buttonTextWithIcon} href="/api/auth/google">Login with Google</a>
+                    <span className={styles.buttonTextWithIcon}>Login with Google</span>
                   </Button>
                 </div>
                 <div className={styles.loginButton}>
