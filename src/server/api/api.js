@@ -15,24 +15,24 @@ server.on('internalError', (request, err)=> {
 });
 
 server.register([ asyncHandler ], ()=>{});
-server.register(bell, (err)=> {
-    if (err) {
-        console.error(err);
-    }
+// server.register(bell, (err)=> {
+//     if (err) {
+//         console.error(err);
+//     }
 
-    // Declare an authentication strategy using the bell scheme
-    // with the name of the provider, cookie encryption password,
-    // and the OAuth client credentials.
-    server.auth.strategy('google', 'bell', {
-        provider: 'google',
-        password: config.secret,
-        clientId: config.googleClientId,
-        clientSecret: config.googleSecret,
-        isSecure: false,     // Terrible idea but required if not using HTTPS especially if developing locally
-    });
+//     // Declare an authentication strategy using the bell scheme
+//     // with the name of the provider, cookie encryption password,
+//     // and the OAuth client credentials.
+//     server.auth.strategy('google', 'bell', {
+//         provider: 'google',
+//         password: config.secret,
+//         clientId: config.googleClientId,
+//         clientSecret: config.googleSecret,
+//         isSecure: false,     // Terrible idea but required if not using HTTPS especially if developing locally
+//     });
 
-    server.route(routes.googleAuthRoute);
-});
+//     server.route(routes.googleAuthRoute);
+// });
 
 server.route(routes.default);
 
