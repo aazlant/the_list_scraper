@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../../modules/actions';
 
-class App extends Component {
+class GoogleCallback extends Component {
 
   render() {
       return (
@@ -13,4 +13,4 @@ class App extends Component {
 }
 
 const mapStateToProps = state => state;
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(GoogleCallback);
