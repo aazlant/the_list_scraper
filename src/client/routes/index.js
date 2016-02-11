@@ -19,7 +19,7 @@ render(
     <div>
       <Router history={browserHistory}>
         <Route path="/" component={App}/>
-        <Route path="/auth/google/callback" component={GoogleCallback}/>
+        <Route path="auth/google/callback" component={GoogleCallback}/>
       </Router>
     </div>
   </Provider>,

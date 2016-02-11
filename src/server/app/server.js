@@ -1,7 +1,8 @@
 require('babel-register');
 
 const httpProxy = require('http-proxy');
-const server = require('./app');
+const server = require('./app').default;
+const appRoute = require('./app').appRoute;
 const config = require('../config');
 
 // Set up a proxy to the API server. #TODO: Check for failure if server isn't up? Functional testing... eventually.
@@ -13,6 +14,9 @@ const proxy = httpProxy.createProxyServer({
 server.use('/api', (req, res) => {
     proxy.web(req, res);
 });
+
+server.get('*', appRoute);
+
 
 server.listen(config.appPort, (error) => {
     if (error) {
