@@ -3,6 +3,8 @@ import postgres from 'pg-promise';
 import crypto from 'crypto';
 import config from '../config';
 
+import * as google from './services/auth/google';
+
 import WinstonLogger from '../../cli/WinstonLogger';
 import DBParsedDataRepository from '../../common/ParsedDataRepository/DB';
 
@@ -36,33 +38,35 @@ export const showsRoute = {
     },
 };
 
-// export const googleAuthRoute = {
-//     method: ['GET', 'POST'], // Must handle both GET and POST
-//     path: '/auth/google/callback', // The callback endpoint registered with the provider
-//     config: {
-//         auth: 'google',
-//         handler: (request, reply)=> {
-//             if (!request.auth.isAuthenticated) {
-//                 return reply('Authentication failed due to: ' + request.auth.error.message);
-//             }
+export const googleAuthRoute = {
+    method: 'POST',
+    path: '/auth/google',
+    config: {
+        handler: async (request, reply)=> {
+            const { payload: { accessToken } } = request;
+            try {
+                await google.validateToken(accessToken);
+                const {id, email, name} = await google.getUserInfo(accessToken);
+                // #TODO: check if user already exists
+                // #TODO: create user in DB
+                // #TODO: save token to DB - learn about worker
+            } catch (error) {
+                // #TODO: use stronger errors library, http://npmjs.com/package/errors
+                console.error(error);
+            }
 
-//             // Perform any account lookup or registration, setup local session,
-//             // and redirect to the application. The third-party credentials are
-//             // stored in request.auth.credentials. Any query parameters from
-//             // the initial request are passed back via request.auth.credentials.query.
-//             return reply.redirect(`${config.appHost}:${config.appPort}/`);
-//         },
-//     },
-// };
+        },
+    },
+};
 
 export const googleRedirect = {
     method: 'GET',
-    path: '/auth/google',
+    path: '/auth/google/redirect',
     config: {
         handler: (request, reply)=> {
             const nonce = crypto.randomBytes(48).toString('hex');
             const redirectUri = `http://${config.appHost}:${config.appPort}/auth/google/callback`;
-            const scope = `https://www.googleapis.com/auth/calendar`;
+            const scope = `https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
             const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
             const query = `?response_type=token&state=${nonce}&redirect_uri=${redirectUri}&scope=${scope}&client_id=${config.googleClientId}`;
             reply.redirect(`${baseUrl}${query}`);
@@ -72,5 +76,6 @@ export const googleRedirect = {
 
 export default [
     showsRoute,
+    googleAuthRoute,
     googleRedirect,
 ];

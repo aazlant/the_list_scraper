@@ -75,6 +75,7 @@
     "mocha": "^2.3.4",
     "nock": "^3.3.2",
     "node-libs-browser": "^0.5.2",
+    "qs": "^6.1.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "react-immutable-proptypes": "^1.5.1",
