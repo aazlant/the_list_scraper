@@ -2,7 +2,7 @@
 
 class UserDataRepository {
 
-    async saveUser(username, authentication) { // eslint-disable-line no-unused-vars
+    async saveUser(username, email, authentication) { // eslint-disable-line no-unused-vars
         throw new Error('Not implemented');
     }
 

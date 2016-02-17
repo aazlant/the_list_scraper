@@ -9,7 +9,7 @@ import styles from './CalendarPanel.styl';
 export default class CalendarPanel extends Component {
   render() {
       const { events } = this.props;
-      const calendarEvents = events.toJS();
+      const calendarEvents = events.toArray();
 
       return (
           <CalendarComponent

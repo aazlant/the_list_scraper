@@ -15,6 +15,8 @@ server.use('/api', (req, res) => {
     proxy.web(req, res);
 });
 
+// #TODO: better error-handling for when api server fails (https://github.com/nodejitsu/node-http-proxy/issues/527)
+
 server.get('*', appRoute);
 
 

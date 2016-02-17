@@ -12,16 +12,14 @@ import * as actions from '../modules/actions';
 const store = configureStore();
 const { dispatch } = store;
 
-// Note: Look into a way to automate mapping routes.
+// TODO: move Router logic to routes.js
 
 render(
   <Provider store={store}>
-    <div>
-      <Router history={browserHistory}>
-        <Route path="/" component={App}/>
-        <Route path="auth/google/callback" component={GoogleCallback}/>
-      </Router>
-    </div>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}/>
+      <Route path="auth/google/callback" component={GoogleCallback}/>
+    </Router>
   </Provider>,
   document.getElementById('root')
 );

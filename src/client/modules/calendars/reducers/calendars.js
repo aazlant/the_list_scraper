@@ -13,8 +13,8 @@ export default (state = initialCalendarState, action )=> {
     case ADD_EVENT_TO_CURRENT_CALENDAR:
         return state.updateIn(['events'], (events)=> events.add(new Event({
             id: (events.size + 1), // Question: I think this is ugly - ordered set?
-            start: action.event.date,
-            end: action.event.date,
+            start: new Date(action.event.date),
+            end: new Date(action.event.date),
             title: `${action.event.show.venue}`,
             show: action.event.show,
             boundActions: action.boundActions,

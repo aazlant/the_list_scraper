@@ -13,7 +13,7 @@ class GoogleCallback extends Component {
       // #TODO action to validate user
 
       return (
-        <h1>Successfully returned from Google.</h1>
+        <h1>Successfully returned from Google. Redirecting...</h1>
       );
   }
 }

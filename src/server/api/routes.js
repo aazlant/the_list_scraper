@@ -1,22 +1,24 @@
 import postgres from 'pg-promise';
 import config from '../config';
 
-import * as google from './services/auth/google';
+import googleAuth from './routes/auth/google';
 
 import WinstonLogger from '../../cli/WinstonLogger';
 import DBParsedDataRepository from '../../common/ParsedDataRepository/DB';
+import DBUserDataRepository from '../../common/UserDataRepository/DB';
 
 const pgp = postgres();
 const db = pgp({...config.dbConfig, database: config.dbConfig.name});
 
 const logger = new WinstonLogger({
     type: 'console',
-    label: 'the-list-logger',
+    label: 'the-list-api-server-logger',
     colorize: true,
     prettyPrint: true,
 });
 
 const dbParsedDataRepository = new DBParsedDataRepository(logger, db);
+const dbUserDataRepository = new DBUserDataRepository(logger, db);
 
 export const showsRoute = {
     method: 'GET',
@@ -38,5 +40,5 @@ export const showsRoute = {
 
 export default [
     showsRoute,
-    ...google.authRoutes,
+    ...googleAuth.map((route)=> route(dbUserDataRepository)),
 ];
