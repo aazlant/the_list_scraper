@@ -1,6 +1,7 @@
 import config from '../../../config';
 import joi from 'joi';
 import * as authServices from '../../services/auth/google';
+import jwt from 'jsonwebtoken';
 
 export const googleAuthRoute = (userDataRepository)=> {
     // #TODO: check for repository
@@ -13,11 +14,14 @@ export const googleAuthRoute = (userDataRepository)=> {
                 try {
                     await authServices.validateToken(accessToken);
                     const {id, email, name} = await authServices.getUserInfo(accessToken);
-                    console.log(id, email, name);
-                    // #TODO: check if user already exists
-                    const user = await userDataRepository.saveUser(name, email, {service: 'google', id: id, token: accessToken}); // QUESTION: Best way to handle service?
-                    console.log(user);
-                    // #TODO: save token to DB - learn about worker
+                    const authentication = {provider: 'google', payload: {id, token: accessToken}};
+                    let user;
+
+                    user = await userDataRepository.fetchUser(name, email, authentication);
+                    if (!user) {
+                        user = await userDataRepository.saveUser(name, email, authentication);
+                    }
+
                     // #TODO: generate JWT via node-jsonwebtoken and return it
                     // promisify this -> jwt.sign({ sub: '...', ... }, process.env..., [callback])
                     // https://auth0.com/blog/2015/04/09/adding-authentication-to-your-react-flux-app/
@@ -36,11 +40,11 @@ export const googleRedirectRoute = ()=> {
         method: 'GET',
         path: '/auth/google/redirect',
         config: {
-            validate: {
-                query: {
-                    nonce: joi.string().alphanum().min(32).required(),
-                },
-            },
+            // validate: {
+            //     query: {
+            //         nonce: joi.string().alphanum().min(32).required(),
+            //     },
+            // },
             handler: (request, reply)=> {
                 const { nonce } = request.query;
                 const redirectUri = `http://${config.appHost}:${config.appPort}/auth/google/callback`;

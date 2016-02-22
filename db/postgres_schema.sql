@@ -1,3 +1,5 @@
+-- #TODO: this needs to be updated to incorporate new auth schema
+--
 --
 -- PostgreSQL database dump
 --

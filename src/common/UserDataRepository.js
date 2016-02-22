@@ -10,7 +10,7 @@ class UserDataRepository {
         throw new Error('Not implemented');
     }
 
-    async findUserById(id) { // eslint-disable-line no-unused-vars
+    async fetchUser(username, email, authentication) { // eslint-disable-line no-unused-vars
         throw new Error('Not implemented');
     }
 
