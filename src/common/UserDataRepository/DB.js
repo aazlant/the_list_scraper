@@ -13,12 +13,15 @@ class DB extends UserDataRepository {
             let user;
 
             try {
-                user = await this.db.one('INSERT INTO users (name, email) VALUES (${name}, ${email}) RETURNING id', { name: username, email: email });
+                user = await this.db.one('INSERT INTO users (name, email) VALUES (${name}, ${email}) RETURNING *', { name: username, email: email });
                 this.logger.info(`saved user "${email}" to db as ID#:${user.id}`);
             } catch (error) {
+                // #TODO: look for code, create unique restriction for email
                 if (error.message.includes('duplicate key value violates')) {
-                    user = await this.db.one('SELECT id FROM users WHERE email = ${email}', { email: email });
+                    user = await this.db.one('SELECT * FROM users WHERE email = ${email}', { email: email });
                     this.logger.warn(`duplicate user "${email}" already in db (user) as ID#:${user.id}`);
+                } else {
+                    throw error;
                 }
             }
 
@@ -34,8 +37,9 @@ class DB extends UserDataRepository {
                     if (error.message.includes('duplicate key value violates')) {
                         googleAuth = await this.db.one('SELECT * FROM auth_google WHERE user_id = ${userId}', { userId: user.id });
                         this.logger.warn(`duplicate user "${email}" already in db (google auth) as ID#:${authentication.id}`);
+                    } else {
+                        throw error;
                     }
-                    this.logger.error(error);
                 }
 
                 return {user, auth: googleAuth};
@@ -58,7 +62,7 @@ class DB extends UserDataRepository {
         let auth;
 
         try {
-            user = await this.db.one('SELECT id FROM users WHERE email = ${email}', { email: email });
+            user = await this.db.one('SELECT * FROM users WHERE email = ${email}', { email: email });
 
             switch (authentication.provider) {
 
@@ -73,7 +77,7 @@ class DB extends UserDataRepository {
             return ({user, auth});
         } catch (error) {
             if (error.message.includes('No data returned')) {
-                return null; // QUESTION: Good approach??
+                return null; // QUESTION: Good approach?? how do I handle the case where somebody registers with google but then wants to log in via fb...
             }
             this.logger.error(error);
         }

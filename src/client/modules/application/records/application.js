@@ -7,6 +7,7 @@ const Application = new Record({
         'open': false,
         'event': new Event(),
     },
+    'auth': null,
 });
 
 export default {

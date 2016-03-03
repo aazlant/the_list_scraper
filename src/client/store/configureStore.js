@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import rootReducer from '../modules/reducers';
@@ -12,10 +12,13 @@ const reducer = combineReducers({
     routing: routeReducer,
 });
 
-const createStoreWithMiddleware = applyMiddleware(
+const createStoreWithMiddleware = compose(
+applyMiddleware(
   thunkMiddleware,
   reduxRouterMiddleware,
   createLogger()
+),
+window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 
 export default function configureStore(initialState) {

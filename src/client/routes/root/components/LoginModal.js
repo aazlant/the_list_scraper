@@ -7,7 +7,7 @@ import styles from './LoginModal.styl';
 
 export default class LoginModal extends Component {
   render() {
-      const { actions: { toggleLoginModal }, application } = this.props;
+      const { actions: { toggleLoginModal, getAuthRedirect }, application } = this.props;
       const modalState = application.toJS().loginModalOpen;
 
       return (
@@ -27,7 +27,7 @@ export default class LoginModal extends Component {
                   </Button>
                 </div>
                 <div className={styles.loginButton}>
-                  <Button bsStyle="danger" bsSize="large" href="/api/auth/google/redirect">
+                  <Button bsStyle="danger" bsSize="large" onClick={getAuthRedirect}>
                     <i className="fa fa-google"/>
                     <span className={styles.buttonTextWithIcon}>Login with Google</span>
                   </Button>

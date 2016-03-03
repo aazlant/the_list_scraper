@@ -1,7 +1,13 @@
 import config from '../../../config';
-import joi from 'joi';
+import crypto from 'crypto';
 import * as authServices from '../../services/auth/google';
 import jwt from 'jsonwebtoken';
+import google from 'googleapis';
+import Promise from 'bluebird';
+const OAuth2 = google.auth.OAuth2;
+
+const redirectUri = `http://${config.appHost}:${config.appPort}/auth/google/callback`;
+const oauth2Client = new OAuth2(config.googleClientId, config.googleSecret, redirectUri);
 
 export const googleAuthRoute = (userDataRepository)=> {
     // #TODO: check for repository
@@ -10,24 +16,31 @@ export const googleAuthRoute = (userDataRepository)=> {
         path: '/auth/google',
         config: {
             handler: async (request, reply)=> {
-                const { payload: { accessToken } } = request;
+                const { payload: { code } } = request;
                 try {
+                    const getToken = Promise.promisify(oauth2Client.getToken.bind(oauth2Client));
+                    const accessToken = (await getToken(code)).access_token; // QUESTION: fragile?
+
                     await authServices.validateToken(accessToken);
                     const {id, email, name} = await authServices.getUserInfo(accessToken);
                     const authentication = {provider: 'google', payload: {id, token: accessToken}};
                     let user;
 
+                    // wrap below in fetchOrCreate()
                     user = await userDataRepository.fetchUser(name, email, authentication);
                     if (!user) {
                         user = await userDataRepository.saveUser(name, email, authentication);
                     }
 
-                    // #TODO: generate JWT via node-jsonwebtoken and return it
-                    // promisify this -> jwt.sign({ sub: '...', ... }, process.env..., [callback])
-                    // https://auth0.com/blog/2015/04/09/adding-authentication-to-your-react-flux-app/
-                    // may not need worker: flow is transparent, does google have a similar long-lived token - provide endpoint to refresh
+                    const token = jwt.sign({
+                        sub: user.id,
+                    }, config.secret, {
+                        expiresIn: '60 days',
+                    });
+
+                    reply({token});
                 } catch (error) {
-                    // #TODO: use stronger errors library, http://npmjs.com/package/errors
+                    // #TODO: use stronger errors library, https://github.com/hapijs/boom
                     console.error(error);
                 }
             },
@@ -40,18 +53,27 @@ export const googleRedirectRoute = ()=> {
         method: 'GET',
         path: '/auth/google/redirect',
         config: {
-            // validate: {
-            //     query: {
-            //         nonce: joi.string().alphanum().min(32).required(),
-            //     },
-            // },
             handler: (request, reply)=> {
-                const { nonce } = request.query;
-                const redirectUri = `http://${config.appHost}:${config.appPort}/auth/google/callback`;
-                const scope = `https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
-                const baseUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
-                const query = `?response_type=token&state=${nonce}&redirect_uri=${redirectUri}&scope=${scope}&client_id=${config.googleClientId}`;
-                reply.redirect(`${baseUrl}${query}`);
+                const nonce = crypto.randomBytes(48).toString('base64');
+
+                const scopes = [
+                    'https://www.googleapis.com/auth/calendar',
+                    'https://www.googleapis.com/auth/userinfo.email',
+                    'https://www.googleapis.com/auth/userinfo.profile',
+                ];
+
+                const url = oauth2Client.generateAuthUrl({
+                    scope: scopes,
+                    state: nonce,
+                });
+
+                const token = jwt.sign({
+                    url: url,
+                    nonce: nonce,
+                }, config.secret, {
+                    expiresIn: '60 days',
+                });
+                reply({token});
             },
         },
     };
