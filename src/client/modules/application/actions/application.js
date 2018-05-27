@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { push } from 'react-router-redux';
 
 export const APP_INITIALIZE = 'APP_INITIALIZE';
+export const GET_GEOLOCATION = 'GET_GEOLOCATION'; // #TODO: move to fetch model probably
 export const LOGIN_MODAL_TOGGLE = 'LOGIN_MODAL_TOGGLE';
 export const EVENT_MODAL_TOGGLE = 'EVENT_MODAL_TOGGLE';
 export const USER_AUTHENTICATED = 'USER_AUTHENTICATED';
@@ -39,9 +40,22 @@ const authenticate = (url)=> (dispatch, getState) => {
     }
 };
 
+export function getGeolocation() {
+    return dispatch => {
+        const geolocation = navigator.geolocation;
+        geolocation.getCurrentPosition((position) => {
+            console.log(position.coords);
+            dispatch({
+                type: GET_GEOLOCATION,
+                payload: position
+            });
+        });
+};}
+
 export const initializeApp = ()=> (dispatch, getState) => {
     const { routing: {location: pathname }} = getState();
-    dispatch(shows.fetchShows());
+    // dispatch(shows.fetchShows());
+    dispatch(getGeolocation())
     dispatch(authenticate(pathname));
     return {
         type: APP_INITIALIZE,

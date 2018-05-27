@@ -6,12 +6,23 @@ import {
   LOGIN_MODAL_TOGGLE,
   EVENT_MODAL_TOGGLE,
   USER_AUTHENTICATED,
+  GET_GEOLOCATION,
 } from '../actions';
 
 const initialAppState = new Application();
 
 export default (state = initialAppState, action )=> {
     switch (action.type) {
+
+    case GET_GEOLOCATION:
+        console.log(action);
+        const longitude = action.payload.coords.longitude;
+        const latitude = action.payload.coords.latitude;
+        return state
+                .set('geolocation', {
+                   latitude,
+                   longitude,
+                });
 
     case LOGIN_MODAL_TOGGLE:
         return state

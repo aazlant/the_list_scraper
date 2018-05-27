@@ -42,6 +42,7 @@
     "prop-type": "0.0.1",
     "react-big-calendar": "^0.19.1",
     "react-bootstrap": "^0.32.1",
+    "react-geolocation": "^1.0.3",
     "react-router-dom": "^4.2.2",
     "react-select": "^1.2.1",
     "request": "^2.87.0",

@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../../modules/actions';
 
+import Geolocation from 'react-geolocation';
+
 import ShowsPanel from './ShowsPanel';
 import CalendarPanel from './CalendarPanel';
 import Header from '../components/Header';
@@ -43,9 +45,6 @@ function App(props) {
           <CalendarPanel events={calendars.events}/>
         </div>
 
-        <div className={styles.showsPanel}>
-          <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
-        </div>
       </div>
     );
 }
