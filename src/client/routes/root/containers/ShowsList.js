@@ -51,36 +51,34 @@ const buildShowItemsByDate = (items, venuesFilter, bandsFilter)=> {
     return showsByDate;
 };
 
-export default class ShowsList extends Component {
-  render() {
-      const {filter, actions} = this.props;
+export default function ShowsList(props) {
+    const {filter, actions} = props;
 
-      const items = this.props.items.toArray();
+    const items = props.items.toArray();
 
-      const venuesFilter = filter.get('venues');
-      const bandsFilter = filter.get('bands');
-      const showsByDate = buildShowItemsByDate(items, venuesFilter, bandsFilter);
+    const venuesFilter = filter.get('venues');
+    const bandsFilter = filter.get('bands');
+    const showsByDate = buildShowItemsByDate(items, venuesFilter, bandsFilter);
 
-      return (
-        <div className={styles.root}>
-          {Object.keys(showsByDate).map((date)=>{
-              const shows = showsByDate[date];
-              return (
-                <div key={date}>
+    return (
+      <div className={styles.root}>
+        {Object.keys(showsByDate).map((date)=>{
+            const shows = showsByDate[date];
+            return (
+              <div key={date}>
 
-                <div className={styles.date}><b>{moment(date).format('MMMM Do, YYYY')}</b></div>
+              <div className={styles.date}><b>{moment(date).format('MMMM Do, YYYY')}</b></div>
 
-                <div className={styles.shows}>
-                  {shows.map((show)=>
-                        <ShowItem key={show.id} show={show} date={date} actions={actions}/>
-                  )}
-                </div>
+              <div className={styles.shows}>
+                {shows.map((show)=>
+                      <ShowItem key={show.id} show={show} date={date} actions={actions}/>
+                )}
+              </div>
 
-              </div>);
-          })}
-        </div>
-      );
-  }
+            </div>);
+        })}
+      </div>
+    );
 }
 
 ShowsList.propTypes = {

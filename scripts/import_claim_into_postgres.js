@@ -108,8 +108,11 @@ if (require.main === module) {
         },
     };
 
+    // console.log("process.argv:", process.argv);
+
     const argv = parseArgs(process.argv.slice(2), opts);
 
+    console.log("argv:", argv);
 
     const db = {
         host: process.env.DB_HOST,
@@ -124,6 +127,8 @@ if (require.main === module) {
         claimID: argv.claim,
         dbConfig: db,
     };
+
+    // console.log("config:", config);
 
     mainExport(config);
 }

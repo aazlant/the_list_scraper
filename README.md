@@ -79,7 +79,7 @@ Produces a claim directory in root with
 
 #### 2) Import script
 
-Copies the parsed shows from a claim into a postgres DB instance
+Copies the parsed shows from a claim into a postgres DB instance.
 
 (claim name is saved in claim directory under `{claim directory}/{claim name}/metadata/claimName.txt`)
 

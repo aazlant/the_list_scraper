@@ -1,6 +1,8 @@
 // #TODO: make more functionally-oriented
 
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+
+import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import { Filter } from '../../../modules/shows/records/filters';
@@ -56,38 +58,35 @@ const prepareItemsByGroup = (items)=> {
 };
 
 
-export default class ShowsFilter extends Component {
+export default function ShowsFilter(props) {
+    const { actions, filter } = props;
+    const items = props.items.toArray();
+    const venuesFilter = filter.get('venues').toArray();
+    const bandsFilter = filter.get('bands').toArray();
+    const itemsByGroup = prepareItemsByGroup(items);
+    return (
+      <div className={styles.root}>
 
-  render() {
-      const { actions, filter } = this.props;
-      const items = this.props.items.toArray();
-      const venuesFilter = filter.get('venues').toArray();
-      const bandsFilter = filter.get('bands').toArray();
-      const itemsByGroup = prepareItemsByGroup(items);
-      return (
-        <div className={styles.root}>
+          <Dropdown placeholder="Select Bands"
+                options={itemsByGroup.bands}
+                onChange={actions.setBandFilter}
+                searchable
+                value={bandsFilter}
+                clearable={false}
+                multi
+                />
 
-            <Dropdown placeholder="Select Bands"
-                  options={itemsByGroup.bands}
-                  onChange={actions.setBandFilter}
-                  searchable
-                  value={bandsFilter}
-                  clearable={false}
-                  multi
-                  />
+          <Dropdown placeholder="Select Venues"
+                options={itemsByGroup.venues}
+                onChange={actions.setVenueFilter}
+                searchable
+                value={venuesFilter}
+                clearable={false}
+                multi
+                />
 
-            <Dropdown placeholder="Select Venues"
-                  options={itemsByGroup.venues}
-                  onChange={actions.setVenueFilter}
-                  searchable
-                  value={venuesFilter}
-                  clearable={false}
-                  multi
-                  />
-
-        </div>
-      );
-  }
+      </div>
+    );
 }
 
 ShowsFilter.propTypes = {

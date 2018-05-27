@@ -1,7 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../../modules/actions';
+import PropTypes from 'prop-types';
 import { parse } from 'qs';
 
 class GoogleCallback extends Component {

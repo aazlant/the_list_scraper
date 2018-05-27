@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../../modules/actions';
@@ -19,37 +20,34 @@ import styles from './App.styl';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome-webpack';
 
-class App extends Component {
+function App(props) {
+    const { application, shows, filter, calendars, dispatch } = props;
+    const boundActions = bindActionCreators(actions, dispatch);
+    return (
+      <div className={styles.appRoot}>
 
-  render() {
-      const { application, shows, filter, calendars, dispatch } = this.props;
-      const boundActions = bindActionCreators(actions, dispatch);
-      return (
-        <div className={styles.appRoot}>
+        <div className={styles.header}>
+          <Header application={application} actions={boundActions}/>
+        </div>
 
-          <div className={styles.header}>
-            <Header application={application} actions={boundActions}/>
-          </div>
-
-          <LoginModal
+        <LoginModal
+              application={application}
+              actions={boundActions}
+        />
+        <EventModal
                 application={application}
                 actions={boundActions}
-          />
-          <EventModal
-                  application={application}
-                  actions={boundActions}
-          />
+        />
 
-          <div className={styles.calendarPanel}>
-            <CalendarPanel events={calendars.events}/>
-          </div>
-
-          <div className={styles.showsPanel}>
-            <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
-          </div>
+        <div className={styles.calendarPanel}>
+          <CalendarPanel events={calendars.events}/>
         </div>
-      );
-  }
+
+        <div className={styles.showsPanel}>
+          <ShowsPanel shows={shows} filter={filter} actions={boundActions}/>
+        </div>
+      </div>
+    );
 }
 
 App.propTypes = {

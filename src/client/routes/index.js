@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { browserHistory, BrowserRouter, Route, Router } from 'react-router-dom'
 import { Provider } from 'react-redux';
-import { Router, Route, browserHistory } from 'react-router';
+// import { Router, browserHistory } from 'react-router';
 
 import App from './root/containers/App.js';
 import GoogleCallback from './googleCallback/containers/GoogleCallback.js';
@@ -16,10 +17,12 @@ const { dispatch } = store;
 
 render(
   <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}/>
-      <Route path="auth/google/callback" component={GoogleCallback}/>
-    </Router>
+    <BrowserRouter>
+        <div>
+            <Route path="/" component={App}/>
+            <Route path="auth/google/callback" component={GoogleCallback}/>
+        </div>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );
