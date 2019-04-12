@@ -36,7 +36,7 @@
     "npm": "^6.1.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "pg-promise": "^2.7.2",
+    "pg-promise": "^3.1.6",
     "pgtools": "0.0.2",
     "poststylus": "^0.2.2",
     "prop-type": "0.0.1",
